@@ -14,7 +14,7 @@ Text {
     property bool hasPlayer: activePlayer !== null
 
     visible: hasPlayer
-    implicitWidth: hasPlayer ? implicitContentWidth + leftPadding + rightPadding : 0
+    width: hasPlayer ? implicitContentWidth + leftPadding + rightPadding : 0
     property real implicitContentWidth: contentWidth
 
     text: {
