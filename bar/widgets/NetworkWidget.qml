@@ -1,14 +1,18 @@
+import "../"
+import "../store"
+
 import QtQuick
 import Quickshell
 
-// waybar: network -> format-wifi/ethernet/disconnected, on-click "kitty -e nmtui"
+import "../store"
+
 Text {
     id: root
     text: NetworkStatus.state === "wifi" ? ""
         : NetworkStatus.state === "ethernet" ? "󰈀"
         : "󰤭"
     color: NetworkStatus.state === "disconnected" ? Theme.surface2 : Theme.blue
-    font.family: Theme.fontFamily
+    font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize
     font.bold: true
 
@@ -18,11 +22,11 @@ Text {
         onClicked: Quickshell.execDetached(["kitty", "-e", "nmtui"])
     }
 
-    HoverHandler { id: hoverHandler }
-    Tooltip {
-        text: NetworkStatus.state === "wifi" ? "Connected to " + NetworkStatus.connectionName
-            : NetworkStatus.state === "ethernet" ? "Connected (" + NetworkStatus.connectionName + ")"
-            : "Disconnected"
-        shown: hoverHandler.hovered
-    }
+    // HoverHandler { id: hoverHandler }
+    // Tooltip {
+    //     text: NetworkStatus.state === "wifi" ? "Connected to " + NetworkStatus.connectionName
+    //         : NetworkStatus.state === "ethernet" ? "Connected (" + NetworkStatus.connectionName + ")"
+    //         : "Disconnected"
+    //     shown: hoverHandler.hovered
+    // }
 }

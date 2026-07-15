@@ -1,9 +1,6 @@
 pragma Singleton
 import QtQuick
 
-// Ported 1:1 from your original style.css @define-color palette,
-// plus a couple of extra colors (yellow/green) that only showed up
-// inside the waybar calendar tooltip markup.
 QtObject {
     readonly property color base: "#1e1e2e"
     readonly property color crust: Qt.rgba(11 / 255, 12 / 255, 16 / 255, 0.5)
@@ -16,12 +13,12 @@ QtObject {
     readonly property color mauve: "#cba6f7"
     readonly property color maroon: "#b14d8d"
 
-    // used only by the calendar popup, taken from the clock.calendar.format block
+    // used only by calendar popup
     readonly property color yellow: "#f9e2af"
     readonly property color green: "#a6e3a1"
 
-    readonly property string fontFamily: "Symbols Nerd Font"
-    readonly property string fontFamilyAlt: "SF Pro Display"
+    readonly property string fontFamily: "SF Pro Display"
+    readonly property string fontFamilyAlt: "Symbols Nerd Font"
     readonly property string launcherFont: "FiraCode Nerd Font"
     readonly property int fontSize: 14
 

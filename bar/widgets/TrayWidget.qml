@@ -1,3 +1,5 @@
+import "../"
+
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Window
@@ -5,7 +7,6 @@ import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
 
-// waybar: tray -> spacing 10
 RowLayout {
     id: root
     spacing: 10

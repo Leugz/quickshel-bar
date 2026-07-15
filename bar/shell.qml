@@ -3,10 +3,9 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 
-// Migrated from waybar: layer "top", height 37, spacing 5.
-// modules-left:   custom/launcher, hyprland/workspaces, mpris
-// modules-center: clock#simpleclock
-// modules-right:  tray, pulseaudio, network, clock, custom/notification, custom/power
+import "widgets"
+import "store"
+
 PanelWindow {
     id: bar
     anchors.top: true
@@ -15,8 +14,6 @@ PanelWindow {
     implicitHeight: Theme.barHeight
     color: "transparent"
 
-    // container that holds the three independently-positioned module groups,
-    // mirroring .modules-left/.modules-center/.modules-right in the old CSS
     Item {
         anchors.fill: parent
 
@@ -30,12 +27,13 @@ PanelWindow {
             anchors.top: parent.top
             anchors.topMargin: 5
             anchors.bottom: parent.bottom
-            implicitWidth: leftRow.implicitWidth + 20
-
+            
+            implicitWidth: leftRow.implicitWidth + 32
+            
             RowLayout {
                 id: leftRow
                 anchors.centerIn: parent
-                spacing: Theme.barSpacing
+                spacing: 16
 
                 LauncherButton {}
                 Workspaces {}
@@ -48,15 +46,15 @@ PanelWindow {
             id: centerBg
             color: Theme.crust
             radius: Theme.moduleRadius
+            
             anchors.centerIn: parent
-            anchors.verticalCenterOffset: 2 // account for the 5px top margin like the side modules
-            implicitWidth: centerRow.implicitWidth + 20
-            implicitHeight: parent.height - 5
-
+            
+            implicitWidth: centerRow.implicitWidth + 32 
+            implicitHeight: parent.height - 10
+            
             RowLayout {
                 id: centerRow
                 anchors.centerIn: parent
-
                 ClockCenter {}
             }
         }
@@ -71,17 +69,18 @@ PanelWindow {
             anchors.top: parent.top
             anchors.topMargin: 5
             anchors.bottom: parent.bottom
-            implicitWidth: rightRow.implicitWidth + 20
-
+            
+            implicitWidth: rightRow.implicitWidth + 32 
+            
             RowLayout {
                 id: rightRow
                 anchors.centerIn: parent
-                spacing: Theme.barSpacing
-
+                spacing: 16
+                
                 TrayWidget {}
                 VolumeWidget {}
                 NetworkWidget {}
-                ClockRight {}
+                CalendarWidget {}
                 NotificationWidget {}
                 PowerButton {}
             }

@@ -5,18 +5,18 @@ import Quickshell.Io
 
 Singleton {
     id: root
-    // "wifi" | "ethernet" | "disconnected"
     property string state: "disconnected"
     property string connectionName: ""
 
-    function refresh() { proc.running = true }
+    function refresh() { 
+        if (!proc.running) proc.running = true; 
+    }
 
     Process {
         id: proc
-        command: ["bash", "-c",
-            "nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | " +
-            "awk -F: '($1==\"wifi\"||$1==\"ethernet\") && $2==\"connected\"{print; f=1; exit} END{if(!f) print \"none:disconnected:\"}'"
-        ]
+        running: false
+        command: ["bash", "-c", "nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '($1==\"wifi\"||$1==\"ethernet\") && $2==\"connected\"{print; f=1; exit} END{if(!f) print \"none:disconnected:\"}'"]
+        
         stdout: SplitParser {
             onRead: data => {
                 if (!data) return;

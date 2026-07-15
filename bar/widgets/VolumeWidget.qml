@@ -1,7 +1,9 @@
+import "../"
+import "../store"
+
 import QtQuick
 import Quickshell
 
-// waybar: pulseaudio -> scroll-step 5, format-icons.default [low, med, high], format-muted
 Text {
     id: root
     property int pct: Math.round(Audio.volume * 100)
@@ -13,7 +15,7 @@ Text {
         return "";
     }
     color: Audio.muted ? Theme.surface2 : Theme.mauve
-    font.family: Theme.fontFamily
+    font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize
     font.bold: true
 
@@ -27,13 +29,12 @@ Text {
         }
     }
     WheelHandler {
-        // waybar: "scroll-step": 5
         onWheel: event => Audio.changeVolume(event.angleDelta.y > 0 ? 5 : -5)
     }
 
-    HoverHandler { id: hoverHandler }
-    Tooltip {
-        text: Audio.muted ? "Muted" : root.pct + "% volume"
-        shown: hoverHandler.hovered
-    }
+    // HoverHandler { id: hoverHandler }
+    // Tooltip {
+    //     text: Audio.muted ? "Muted" : root.pct + "% volume"
+    //     shown: hoverHandler.hovered
+    // }
 }

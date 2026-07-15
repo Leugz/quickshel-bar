@@ -1,7 +1,8 @@
+import "../"
+import "../store"
+
 import QtQuick
 
-// waybar: custom/notification -> swaync-client -swb, click toggles panel,
-// right-click toggles do-not-disturb
 Text {
     id: root
 
@@ -19,7 +20,7 @@ Text {
     visible: NotificationStatus.available
     text: iconMap[NotificationStatus.stateClass] || iconMap["none"]
     color: Theme.text
-    font.family: Theme.fontFamily
+    font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize
     font.bold: true
     rightPadding: 4

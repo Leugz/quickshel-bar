@@ -23,7 +23,7 @@ Rectangle {
     function isSameDay(a, b) {
         return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
     }
-    // rough (non-ISO) week-of-year number, good enough for a bar tooltip
+
     function weekNumber(d) {
         const onejan = new Date(d.getFullYear(), 0, 1);
         return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
@@ -32,11 +32,11 @@ Rectangle {
     function buildWeeks() {
         const y = viewDate.getFullYear();
         const m = viewDate.getMonth();
-        const firstDow = new Date(y, m, 1).getDay(); // 0=Sun
+        const firstDow = new Date(y, m, 1).getDay();
         const totalDays = daysInMonth(y, m);
         const weeks = [];
         let week = [];
-        // leading blanks
+
         for (let i = 0; i < firstDow; i++) week.push(null);
         for (let day = 1; day <= totalDays; day++) {
             week.push(new Date(y, m, day));
@@ -53,7 +53,6 @@ Rectangle {
     onViewDateChanged: weeks = buildWeeks()
 
     MouseArea {
-        // waybar: "on-scroll": 1 -> change month by one per scroll notch
         anchors.fill: parent
         acceptedButtons: Qt.NoButton
     }

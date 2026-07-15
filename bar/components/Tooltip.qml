@@ -1,9 +1,5 @@
 import QtQuick
 
-// Drop this inside any hoverable widget and bind `shown` to a
-// HoverHandler.hovered (or any other bool). It anchors itself below
-// its parent item and never affects layout, since it's a floating
-// Rectangle that isn't managed by the parent's layout.
 Rectangle {
     id: root
     property string text: ""

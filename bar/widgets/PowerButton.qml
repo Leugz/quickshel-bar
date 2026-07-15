@@ -1,12 +1,13 @@
+import "../"
+
 import QtQuick
 import Quickshell
 
-// waybar: custom/power -> on-click "wlogout -b 4"
 Text {
     id: root
     text: "󰐥"
     color: Theme.maroon
-    font.family: Theme.fontFamily
+    font.family: Theme.fontFamilyAlt
     font.pixelSize: 16
     font.bold: true
 
