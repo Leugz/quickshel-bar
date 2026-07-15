@@ -1,13 +1,18 @@
+//@ pragma UseQApplication
+import QtQml
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
-
 import "widgets"
-import "store"
 
-PanelWindow {
+Instantiator {
+    model: Quickshell.screens
+
+    delegate: PanelWindow {
     id: bar
+    screen: modelData
+
     anchors.top: true
     anchors.left: true
     anchors.right: true
@@ -76,8 +81,10 @@ PanelWindow {
                 id: rightRow
                 anchors.centerIn: parent
                 spacing: 16
-                
-                TrayWidget {}
+
+                TrayWidget {
+                    parentWindow: bar
+                }
                 VolumeWidget {}
                 NetworkWidget {}
                 CalendarWidget {}
@@ -86,4 +93,5 @@ PanelWindow {
             }
         }
     }
+}
 }

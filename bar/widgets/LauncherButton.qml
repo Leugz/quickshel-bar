@@ -14,6 +14,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["wofi", "-show", "drun"])
+        onClicked: Quickshell.execDetached(["wofi", "--show", "drun"])
     }
 }

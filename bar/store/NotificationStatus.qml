@@ -15,7 +15,7 @@ Singleton {
     Process {
         id: proc
         command: ["bash", "-c", "command -v swaync-client >/dev/null 2>&1 && swaync-client -swb"]
-        running: true
+        running: false
         
         stdout: SplitParser {
             onRead: data => {

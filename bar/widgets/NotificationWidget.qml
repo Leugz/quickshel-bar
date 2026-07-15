@@ -17,7 +17,7 @@ Text {
         "dnd-inhibited-none": "\uf1f7"
     })
 
-    visible: NotificationStatus.available
+    // visible: NotificationStatus.available
     text: iconMap[NotificationStatus.stateClass] || iconMap["none"]
     color: Theme.text
     font.family: Theme.fontFamilyAlt
