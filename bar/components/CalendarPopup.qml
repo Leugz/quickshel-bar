@@ -1,23 +1,27 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
+import "../"
 
-Rectangle {
+PopupWindow {
     id: root
+    
     property bool shown: false
     property date viewDate: new Date()
+    property Item target: null
 
-    visible: shown
-    z: 1000
-    radius: 10
-    color: Theme.base
-    border.color: Theme.surface2
-    border.width: 1
-    implicitWidth: grid.implicitWidth + 24
-    implicitHeight: content.implicitHeight + 24
+    visible: shown || bg.opacity > 0
+    color: "transparent"
 
-    anchors.top: parent.bottom
-    anchors.topMargin: 6
-    anchors.right: parent.right
+    implicitWidth: bg.implicitWidth
+    implicitHeight: bg.implicitHeight
+
+    anchor {
+        item: root.target 
+        edges: Edges.Bottom 
+        gravity: Edges.Bottom | Edges.Right 
+        margins.top: 6
+    }
 
     function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
     function isSameDay(a, b) {
@@ -52,84 +56,105 @@ Rectangle {
     property var weeks: buildWeeks()
     onViewDateChanged: weeks = buildWeeks()
 
-    MouseArea {
-        anchors.fill: parent
-        acceptedButtons: Qt.NoButton
-    }
-    WheelHandler {
-        onWheel: event => {
-            const d = root.viewDate;
-            const delta = event.angleDelta.y > 0 ? -1 : 1;
-            root.viewDate = new Date(d.getFullYear(), d.getMonth() + delta, 1);
+    Rectangle {
+        id: bg
+
+        opacity: root.shown ? 1.0 : 0.0
+        scale: root.shown ? 1.0 : 0.95
+        transformOrigin: Item.Top
+        
+        Behavior on opacity { NumberAnimation { duration: 150 } }
+        Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+
+        radius: 10
+        color: Theme.base
+        border.color: Theme.surface2
+        border.width: 1
+        
+        implicitWidth: grid.implicitWidth + 24
+        implicitHeight: content.implicitHeight + 24
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.NoButton
         }
-    }
-
-    ColumnLayout {
-        id: content
-        anchors.centerIn: parent
-        spacing: 6
-
-        Text {
-            Layout.alignment: Qt.AlignHCenter
-            text: Qt.formatDateTime(root.viewDate, "MMMM yyyy")
-            color: Theme.text
-            font.bold: true
-            font.pixelSize: 14
+        
+        WheelHandler {
+            onWheel: event => {
+                const d = root.viewDate;
+                const delta = event.angleDelta.y > 0 ? -1 : 1;
+                root.viewDate = new Date(d.getFullYear(), d.getMonth() + delta, 1);
+            }
         }
 
-        GridLayout {
-            id: grid
-            columns: 8
-            rowSpacing: 4
-            columnSpacing: 10
+        ColumnLayout {
+            id: content
+            anchors.centerIn: parent
+            spacing: 6
 
-            Text { text: "W"; color: Theme.green; font.bold: true; font.pixelSize: 11 }
-            Repeater {
-                model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-                delegate: Text {
-                    required property string modelData
-                    text: modelData
-                    color: Theme.yellow
-                    font.bold: true
-                    font.pixelSize: 11
-                    Layout.alignment: Qt.AlignHCenter
-                }
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: Qt.formatDateTime(root.viewDate, "MMMM yyyy")
+                color: Theme.text
+                font.bold: true
+                font.pixelSize: 14
             }
 
-            Repeater {
-                model: root.weeks
-                delegate: Item {
-                    required property var modelData
-                    required property int index
-                    Layout.columnSpan: 8
-                    Layout.fillWidth: true
-                    implicitHeight: weekRow.implicitHeight
+            GridLayout {
+                id: grid
+                columns: 8
+                rowSpacing: 4
+                columnSpacing: 10
 
-                    RowLayout {
-                        id: weekRow
-                        anchors.fill: parent
-                        spacing: 10
+                Text { text: "W"; color: Theme.green; font.bold: true; font.pixelSize: 11 }
+                
+                Repeater {
+                    model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
+                    delegate: Text {
+                        required property string modelData
+                        text: modelData
+                        color: Theme.yellow
+                        font.bold: true
+                        font.pixelSize: 11
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+                }
 
-                        Text {
-                            text: "W" + root.weekNumber(modelData.find(d => d !== null) || root.viewDate)
-                            color: Theme.green
-                            font.bold: true
-                            font.pixelSize: 11
-                            Layout.preferredWidth: 18
-                        }
+                Repeater {
+                    model: root.weeks
+                    delegate: Item {
+                        required property var modelData
+                        required property int index
+                        Layout.columnSpan: 8
+                        Layout.fillWidth: true
+                        implicitHeight: weekRow.implicitHeight
 
-                        Repeater {
-                            model: modelData
-                            delegate: Text {
-                                required property var modelData
-                                Layout.alignment: Qt.AlignHCenter
+                        RowLayout {
+                            id: weekRow
+                            anchors.fill: parent
+                            spacing: 10
+
+                            Text {
+                                text: "W" + root.weekNumber(modelData.find(d => d !== null) || root.viewDate)
+                                color: Theme.green
+                                font.bold: true
+                                font.pixelSize: 11
                                 Layout.preferredWidth: 18
-                                text: modelData ? modelData.getDate() : ""
-                                horizontalAlignment: Text.AlignHCenter
-                                font.pixelSize: 12
-                                font.underline: modelData && root.isSameDay(modelData, new Date())
-                                font.bold: modelData && root.isSameDay(modelData, new Date())
-                                color: modelData && root.isSameDay(modelData, new Date()) ? Theme.red : Theme.text
+                            }
+
+                            Repeater {
+                                model: modelData
+                                delegate: Text {
+                                    required property var modelData
+                                    Layout.alignment: Qt.AlignHCenter
+                                    Layout.preferredWidth: 18
+                                    text: modelData ? modelData.getDate() : ""
+                                    horizontalAlignment: Text.AlignHCenter
+                                    font.pixelSize: 12
+                                    font.underline: modelData && root.isSameDay(modelData, new Date())
+                                    font.bold: modelData && root.isSameDay(modelData, new Date())
+                                    color: modelData && root.isSameDay(modelData, new Date()) ? Theme.red : Theme.text
+                                }
                             }
                         }
                     }

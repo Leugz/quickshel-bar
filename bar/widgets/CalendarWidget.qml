@@ -39,6 +39,7 @@ Item {
     HoverHandler { id: hoverHandler }
 
     CalendarPopup {
+        target: root
         shown: hoverHandler.hovered
         viewDate: root.now
     }

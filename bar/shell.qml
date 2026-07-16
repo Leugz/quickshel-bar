@@ -5,93 +5,104 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import "widgets"
+import "windows"
 
-Instantiator {
-    model: Quickshell.screens
+Scope {
+    id: root
 
-    delegate: PanelWindow {
-    id: bar
-    screen: modelData
+    // --- Global Fullscreen Windows ---
+    PowerMenu {
+        id: globalPowerMenu
+    }
 
-    anchors.top: true
-    anchors.left: true
-    anchors.right: true
-    implicitHeight: Theme.barHeight
-    color: "transparent"
+    // --- Multi-Monitor Bar Setup ---
+    Instantiator {
+        model: Quickshell.screens
 
-    Item {
-        anchors.fill: parent
+        delegate: PanelWindow {
+            id: bar
+            screen: modelData
 
-        // ---- LEFT ----
-        Rectangle {
-            id: leftBg
-            color: Theme.crust
-            radius: Theme.moduleRadius
-            anchors.left: parent.left
-            anchors.leftMargin: 10
-            anchors.top: parent.top
-            anchors.topMargin: 5
-            anchors.bottom: parent.bottom
-            
-            implicitWidth: leftRow.implicitWidth + 32
-            
-            RowLayout {
-                id: leftRow
-                anchors.centerIn: parent
-                spacing: 16
+            anchors.top: true
+            anchors.left: true
+            anchors.right: true
+            implicitHeight: Theme.barHeight
+            color: "transparent"
 
-                LauncherButton {}
-                Workspaces {}
-                MprisWidget {}
-            }
-        }
+            Item {
+                anchors.fill: parent
 
-        // ---- CENTER ----
-        Rectangle {
-            id: centerBg
-            color: Theme.crust
-            radius: Theme.moduleRadius
-            
-            anchors.centerIn: parent
-            
-            implicitWidth: centerRow.implicitWidth + 32 
-            implicitHeight: parent.height - 10
-            
-            RowLayout {
-                id: centerRow
-                anchors.centerIn: parent
-                ClockCenter {}
-            }
-        }
+                // ---- LEFT ----
+                Rectangle {
+                    id: leftBg
+                    color: Theme.crust
+                    radius: Theme.moduleRadius
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    anchors.bottom: parent.bottom
+                    
+                    implicitWidth: leftRow.implicitWidth + 32
+                    
+                    RowLayout {
+                        id: leftRow
+                        anchors.centerIn: parent
+                        spacing: 16
 
-        // ---- RIGHT ----
-        Rectangle {
-            id: rightBg
-            color: Theme.crust
-            radius: Theme.moduleRadius
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.top: parent.top
-            anchors.topMargin: 5
-            anchors.bottom: parent.bottom
-            
-            implicitWidth: rightRow.implicitWidth + 32 
-            
-            RowLayout {
-                id: rightRow
-                anchors.centerIn: parent
-                spacing: 16
-
-                TrayWidget {
-                    parentWindow: bar
+                        LauncherButton {}
+                        Workspaces {}
+                        MprisWidget {}
+                    }
                 }
-                VolumeWidget {}
-                NetworkWidget {}
-                CalendarWidget {}
-                NotificationWidget {}
-                PowerButton {}
+
+                // ---- CENTER ----
+                Rectangle {
+                    id: centerBg
+                    color: Theme.crust
+                    radius: Theme.moduleRadius
+                    
+                    anchors.centerIn: parent
+                    
+                    implicitWidth: centerRow.implicitWidth + 32 
+                    implicitHeight: parent.height - 10
+                    
+                    RowLayout {
+                        id: centerRow
+                        anchors.centerIn: parent
+                        ClockCenter {}
+                    }
+                }
+
+                // ---- RIGHT ----
+                Rectangle {
+                    id: rightBg
+                    color: Theme.crust
+                    radius: Theme.moduleRadius
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    anchors.bottom: parent.bottom
+                    
+                    implicitWidth: rightRow.implicitWidth + 32 
+                    
+                    RowLayout {
+                        id: rightRow
+                        anchors.centerIn: parent
+                        spacing: 16
+
+                        TrayWidget {
+                            parentWindow: bar
+                        }
+                        VolumeWidget {}
+                        NetworkWidget {}
+                        CalendarWidget {}
+                        NotificationWidget {}
+                        PowerButton {}
+                    }
+                }
             }
         }
     }
-}
 }

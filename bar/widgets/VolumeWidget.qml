@@ -1,6 +1,6 @@
 import "../"
 import "../store"
-
+import "../components"
 import QtQuick
 import Quickshell
 
@@ -32,9 +32,11 @@ Text {
         onWheel: event => Audio.changeVolume(event.angleDelta.y > 0 ? 5 : -5)
     }
 
-    // HoverHandler { id: hoverHandler }
-    // Tooltip {
-    //     text: Audio.muted ? "Muted" : root.pct + "% volume"
-    //     shown: hoverHandler.hovered
-    // }
+    HoverHandler { id: hoverHandler }
+
+    Tooltip {
+        target: root
+        shown: hoverHandler.hovered
+        text: Audio.muted ? "Muted" : root.pct + "% volume"
+    }
 }

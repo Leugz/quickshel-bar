@@ -14,6 +14,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["wlogout", "-b", "4"])
+        onClicked: globalPowerMenu.visible = true
     }
 }

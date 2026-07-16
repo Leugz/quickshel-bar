@@ -1,10 +1,8 @@
 import "../"
 import "../store"
-
+import "../components"
 import QtQuick
 import Quickshell
-
-import "../store"
 
 Text {
     id: root
@@ -22,11 +20,13 @@ Text {
         onClicked: Quickshell.execDetached(["kitty", "-e", "nmtui"])
     }
 
-    // HoverHandler { id: hoverHandler }
-    // Tooltip {
-    //     text: NetworkStatus.state === "wifi" ? "Connected to " + NetworkStatus.connectionName
-    //         : NetworkStatus.state === "ethernet" ? "Connected (" + NetworkStatus.connectionName + ")"
-    //         : "Disconnected"
-    //     shown: hoverHandler.hovered
-    // }
+    HoverHandler { id: hoverHandler }
+
+    Tooltip {
+        target: root
+        shown: hoverHandler.hovered
+        text: NetworkStatus.state === "wifi" ? "Connected to " + NetworkStatus.connectionName
+            : NetworkStatus.state === "ethernet" ? "Connected (" + NetworkStatus.connectionName + ")"
+            : "Disconnected"
+    }
 }
