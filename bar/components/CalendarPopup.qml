@@ -106,14 +106,14 @@ PopupWindow {
                 rowSpacing: 4
                 columnSpacing: 10
 
-                Text { text: "W"; color: Theme.green; font.bold: true; font.pixelSize: 11 }
+                Text { text: "W"; color: Theme.mauve; font.bold: true; font.pixelSize: 11 }
                 
                 Repeater {
                     model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
                     delegate: Text {
                         required property string modelData
                         text: modelData
-                        color: Theme.yellow
+                        color: Theme.lightblue
                         font.bold: true
                         font.pixelSize: 11
                         Layout.alignment: Qt.AlignHCenter
@@ -136,7 +136,7 @@ PopupWindow {
 
                             Text {
                                 text: "W" + root.weekNumber(modelData.find(d => d !== null) || root.viewDate)
-                                color: Theme.green
+                                color: Theme.mauve
                                 font.bold: true
                                 font.pixelSize: 11
                                 Layout.preferredWidth: 18
