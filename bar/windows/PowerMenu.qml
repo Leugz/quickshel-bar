@@ -1,96 +1,89 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
-import "../" 
+import "../"
 
 PanelWindow {
     id: root
-    
-    visible: false 
-    
+    WlrLayershell.namespace: "quickshell:powermenu"
+    visible: false
     anchors {
         top: true
         bottom: true
         left: true
         right: true
     }
-    
     exclusionMode: ExclusionMode.Ignore
-    
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-    
     color: "transparent"
 
-    // 2. The Dimmed Background
     Rectangle {
+        id: dimBg
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.7) 
-        
-        // Force focus on this rectangle so it catches the key presses
+        color: Qt.rgba(0, 0, 0, 0.7)
         focus: true
         Keys.onEscapePressed: root.visible = false
-        
+
         MouseArea {
             anchors.fill: parent
             onClicked: root.visible = false
         }
-    }
 
-    // 3. The Button Grid
-    Row {
-        anchors.centerIn: parent
-        spacing: 30
+        Row {
+            anchors.centerIn: parent
+            spacing: 0 // wlogout's buttons sit flush against each other
 
-        Repeater {
-            model: [
-                { name: "Lock", icon: "", cmd: "loginctl lock-session", hoverColor: Theme.blue },
-                { name: "Suspend", icon: "󰤄", cmd: "systemctl suspend", hoverColor: Theme.mauve },
-                { name: "Reboot", icon: "󰜉", cmd: "systemctl reboot", hoverColor: Theme.green },
-                { name: "Shutdown", icon: "", cmd: "systemctl poweroff", hoverColor: "#f38ba8" } 
-            ]
+            Repeater {
+                model: [
+                    { name: "Suspend", icon: "\uf28c", cmd: "systemctl suspend", accent: Theme.blue, edge: "left" },
+                    { name: "Logout", icon: "\udb80\udf43", cmd: "hyprctl dispatch exit", accent: Theme.lightblue, edge: "none" },
+                    { name: "Reboot", icon: "\uead2", cmd: "systemctl reboot", accent: Theme.mauve, edge: "none" },
+                    { name: "Shutdown", icon: "\uf011", cmd: "systemctl poweroff", accent: Theme.maroon, edge: "right" }
+                ]
 
-            delegate: Rectangle {
-                id: actionButton
-                width: 140
-                height: 140
-                radius: 20
-                color: Theme.crust 
-                
-                scale: mouseArea.containsMouse ? 1.05 : 1.0
-                Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutBack } }
-                
-                Column {
-                    anchors.centerIn: parent
-                    spacing: 12
-                    
+                delegate: Rectangle {
+                    id: actionButton
+                    height: {
+                        const base = mouseArea.containsMouse ? 0.28 : 0.24;
+                        return Math.max(200, Math.min(400, dimBg.height * base));
+                    }
+                    width: Math.max(120, Math.min(220, dimBg.width * 0.11))
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(30/255, 30/255, 30/255, 0.6)
+
+                    topLeftRadius: modelData.edge === "left" ? 40 : (mouseArea.containsMouse ? 20 : 0)
+                    bottomLeftRadius: modelData.edge === "left" ? 40 : (mouseArea.containsMouse ? 20 : 0)
+                    topRightRadius: modelData.edge === "right" ? 40 : (mouseArea.containsMouse ? 20 : 0)
+                    bottomRightRadius: modelData.edge === "right" ? 40 : (mouseArea.containsMouse ? 20 : 0)
+
+                    Behavior on height { NumberAnimation { duration: 300; easing.type: Easing.OutBack } }
+                    Behavior on color { ColorAnimation { duration: 200 } }
+                    Behavior on topLeftRadius { NumberAnimation { duration: 200 } }
+                    Behavior on topRightRadius { NumberAnimation { duration: 200 } }
+                    Behavior on bottomLeftRadius { NumberAnimation { duration: 200 } }
+                    Behavior on bottomRightRadius { NumberAnimation { duration: 200 } }
+
                     Text {
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.centerIn: parent
                         text: modelData.icon
-                        font.family: Theme.fontFamilyAlt 
-                        font.pixelSize: 48
-                        color: mouseArea.containsMouse ? modelData.hoverColor : Theme.text
+                        font.family: Theme.fontFamilyAlt
+                        font.pixelSize: mouseArea.containsMouse ? 68 : 52
+                        color: mouseArea.containsMouse ? modelData.accent : "#ffffff"
+
+                        Behavior on font.pixelSize { NumberAnimation { duration: 200 } }
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
-                    
-                    Text {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        text: modelData.name
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 16
-                        color: Theme.text
-                        opacity: 0.7
-                    }
-                }
 
-                MouseArea {
-                    id: mouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    
-                    onClicked: {
-                        root.visible = false;
-                        Quickshell.execDetached(["bash", "-c", modelData.cmd]);
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            root.visible = false;
+                            Quickshell.execDetached(["bash", "-c", modelData.cmd]);
+                        }
                     }
                 }
             }
