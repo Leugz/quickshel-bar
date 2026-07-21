@@ -12,8 +12,6 @@ QtObject {
     readonly property color red: "#f38ba8"
     readonly property color mauve: "#cba6f7"
     readonly property color maroon: "#b14d8d"
-    readonly property color yellow: "#f9e2af"
-    readonly property color green: "#a6e3a1"
 
     readonly property string fontFamily: "SF Pro Display"
     readonly property string fontFamilyAlt: "Symbols Nerd Font"
