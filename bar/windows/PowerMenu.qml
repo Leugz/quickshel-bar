@@ -50,7 +50,7 @@ PanelWindow {
                     width: Math.max(120, Math.min(220, dimBg.width * 0.11))
                     anchors.verticalCenter: parent.verticalCenter
 
-                    color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(30/255, 30/255, 30/255, 0.6)
+                    color: mouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : Qt.rgba(1, 1, 1, 0.06)
 
                     topLeftRadius: modelData.edge === "left" ? 40 : (mouseArea.containsMouse ? 20 : 0)
                     bottomLeftRadius: modelData.edge === "left" ? 40 : (mouseArea.containsMouse ? 20 : 0)

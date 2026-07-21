@@ -51,7 +51,6 @@ PopupWindow {
             anchors.fill: parent
             anchors.margins: 12
 
-            // Left Side: Square Cover Art
             Rectangle {
                 id: cover
                 width: 85
@@ -120,15 +119,13 @@ PopupWindow {
                 }
             }
 
-            // Right Side: Content Area
             Item {
                 anchors.left: cover.right
-                anchors.leftMargin: 12 // Keeps the controls tight against the cover art
+                anchors.leftMargin: 12
                 anchors.right: parent.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
 
-                // Bulletproof Close Button
                 Item {
                     id: closeBtn
                     anchors.top: parent.top
@@ -149,7 +146,6 @@ PopupWindow {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            // Directly turns off the popup from the main widget, guaranteeing it closes and reopens properly
                             if (root.target) {
                                 root.target.popupOpen = false;
                             }
@@ -157,7 +153,6 @@ PopupWindow {
                     }
                 }
 
-                // App Identity (Bottom Right)
                 Row {
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
@@ -199,7 +194,6 @@ PopupWindow {
                     }
                 }
 
-                // Centered Controls & Text Block
                 Column {
                     anchors.left: parent.left
                     anchors.right: parent.right

@@ -29,7 +29,6 @@ Row {
             width: isActive ? 24 : 12
             radius: height / 2
 
-            // --- Colors ---
             color: {
                 if (isUrgent) return Theme.red;
                 if (isActive) return Theme.mauve;
@@ -37,7 +36,6 @@ Row {
                 return Theme.surface2;
             }
 
-            // --- Smooth Animations ---
             Behavior on width {
                 NumberAnimation { 
                     duration: 250 
@@ -48,7 +46,6 @@ Row {
                 ColorAnimation { duration: 200 }
             }
 
-            // --- Interaction ---
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
