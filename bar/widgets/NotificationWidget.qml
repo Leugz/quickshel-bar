@@ -30,8 +30,9 @@ Text {
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) NotificationStatus.toggle();
-            else NotificationStatus.openPanel();
+            if (mouse.button === Qt.LeftButton) {
+                globalNotificationCenter.isOpen = !globalNotificationCenter.isOpen;
+            }
         }
     }
 }

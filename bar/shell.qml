@@ -4,15 +4,31 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Services.Notifications
 import "widgets"
 import "windows"
 
 Scope {
     id: root
 
+    NotificationServer {
+        id: notifServer
+        persistenceSupported: true
+    }
+
     // --- Global Fullscreen Windows ---
     PowerMenu {
         id: globalPowerMenu
+    }
+
+    NotificationOverlay {
+        id: globalNotificationOverlay
+        server: notifServer
+    }
+
+    NotificationCenter {
+        id: globalNotificationCenter
+        server: notifServer
     }
 
     // --- Multi-Monitor Bar Setup ---
