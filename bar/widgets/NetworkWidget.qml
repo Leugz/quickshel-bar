@@ -1,6 +1,6 @@
 import "../"
 import "../store"
-import "../components"
+import "../windows"
 import QtQuick
 import Quickshell
 

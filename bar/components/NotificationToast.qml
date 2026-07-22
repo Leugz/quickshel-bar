@@ -53,7 +53,7 @@ Rectangle {
                 }
                 
                 Text {
-                    text: "✕"
+                    text: ""
                     color: Theme.unactive
                     font.pixelSize: 12
                     MouseArea {

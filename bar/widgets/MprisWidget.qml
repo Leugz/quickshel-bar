@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell.Services.Mpris
 import "../"
-import "../components"
+import "../windows"
 
 Item {
     id: root

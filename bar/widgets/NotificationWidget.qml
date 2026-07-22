@@ -1,24 +1,13 @@
 import "../"
-import "../store"
 
 import QtQuick
+import Quickshell.Services.Notifications
 
 Text {
     id: root
+    required property NotificationServer server
 
-    readonly property var iconMap: ({
-        "notification": "󱅫",
-        "none": "",
-        "dnd-notification": "",
-        "dnd-none": "󰂛",
-        "inhibited-notification": "\uf0a2",
-        "inhibited-none": "\uf0a2",
-        "dnd-inhibited-notification": "\uf1f7",
-        "dnd-inhibited-none": "\uf1f7"
-    })
-
-    // visible: NotificationStatus.available
-    text: iconMap[NotificationStatus.stateClass] || iconMap["none"]
+    text: server.trackedNotifications.count > 0 ? "󱅫" : ""
     color: Theme.text
     font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize

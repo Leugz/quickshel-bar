@@ -4,6 +4,7 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
+import "../"
 import "../components"
 
 PanelWindow {
@@ -82,9 +83,8 @@ PanelWindow {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            for (let i = 0; i < root.server.trackedNotifications.count; i++) {
-                                root.server.trackedNotifications.get(i).dismiss();
-                            }
+                            const list = [...root.server.trackedNotifications.values];
+                            list.forEach(n => n.dismiss());
                         }
                     }
                 }

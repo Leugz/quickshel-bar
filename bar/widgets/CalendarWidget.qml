@@ -1,6 +1,6 @@
 import QtQuick
 import "../"
-import "../components"
+import "../windows"
 
 Item {
     id: root

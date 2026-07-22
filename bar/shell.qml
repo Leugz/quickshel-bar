@@ -14,6 +14,13 @@ Scope {
     NotificationServer {
         id: notifServer
         persistenceSupported: true
+        bodySupported: true
+        actionsSupported: true
+        imageSupported: true
+    
+        onNotification: notification => {
+            notification.tracked = true
+        }
     }
 
     // --- Global Fullscreen Windows ---
@@ -114,7 +121,9 @@ Scope {
                         VolumeWidget {}
                         NetworkWidget {}
                         CalendarWidget {}
-                        NotificationWidget {}
+                        NotificationWidget {
+                            server: notifServer
+                        }
                         PowerButton {}
                     }
                 }
