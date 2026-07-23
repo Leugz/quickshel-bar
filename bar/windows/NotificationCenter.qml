@@ -13,7 +13,7 @@ PanelWindow {
     
     property bool isOpen: false
     
-    visible: isOpen || implicitHeight > 0
+    visible: isOpen || innerBg.height > 0
     
     anchors {
         top: true
@@ -26,8 +26,7 @@ PanelWindow {
     width: 380
     color: "transparent" 
     
-    implicitHeight: isOpen ? Math.min(500, innerLayout.implicitHeight + 32) : 0
-    Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
+    implicitHeight: Math.min(500, innerLayout.implicitHeight + 32)
     
     exclusionMode: ExclusionMode.Ignore
 
@@ -58,19 +57,18 @@ PanelWindow {
     
     Rectangle {
         id: innerBg
-        width: parent.width
-        height: Math.min(500, innerLayout.implicitHeight + 32)
-        anchors.bottom: parent.bottom
 
+        width: parent.width
+        height: root.isOpen ? root.implicitHeight : 0
+        Behavior on height { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
+
+        anchors.top: parent.top
         clip: true
         
         color: Qt.rgba(30/255, 30/255, 46/255, 0.6)
         border.color: Theme.surface2
         border.width: 1
         radius: Theme.moduleRadius
-        
-        opacity: root.isOpen ? 1.0 : 0.0
-        Behavior on opacity { NumberAnimation { duration: 250 } }
         
         ColumnLayout {
             id: innerLayout
@@ -96,8 +94,8 @@ PanelWindow {
                     width: 84
                     height: 26
                     radius: 6
-                    color: clearMouse.containsMouse ? Theme.maroon : Qt.rgba(127, 127, 127, 0.08)
-                    border.color: clearMouse.containsMouse ? Theme.maroon : Qt.rgba(255, 255, 255, 0.12)
+                    color: clearMouse.containsMouse ? Qt.alpha(Theme.blue, 0.15) : Qt.rgba(127/255, 127/255, 127/255, 0.08)
+                    border.color: clearMouse.containsMouse ? Qt.alpha(Theme.blue, 0.4) : Qt.rgba(255/255, 255/255, 255/255, 0.12)
                     border.width: 1
 
                     Behavior on color { ColorAnimation { duration: 150 } }
@@ -105,11 +103,13 @@ PanelWindow {
 
                     Text {
                         anchors.centerIn: parent
+
                         text: "Clear All"
-                        color: clearMouse.containsMouse ? Theme.base : Theme.text
+                        color: clearMouse.containsMouse ? Theme.blue : Theme.text
                         font.family: Theme.fontFamily
                         font.pixelSize: 12
-                        font.bold: true
+                        
+                        Behavior on color { ColorAnimation { duration: 150 } }
                     }
 
                     MouseArea {
