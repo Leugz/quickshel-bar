@@ -98,7 +98,7 @@ Item {
             Process {
                 id: cavaProc
                 running: visualizer.isPlaying
-                command: ["cava", "-p", Quickshell.env("HOME") + "/.config/quickshell/bar/cava_widget.conf"]
+                command: ["cava", "-p", Quickshell.env("HOME") + "/.config/quickshell/bar/config/cava.conf"]
                 stdout: SplitParser {
                     onRead: data => {
                         if (!data) return;

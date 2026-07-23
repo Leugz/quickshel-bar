@@ -1,5 +1,5 @@
 import "../"
-import "../store"
+import "../services"
 import "../windows"
 import QtQuick
 import Quickshell

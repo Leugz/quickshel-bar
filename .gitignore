@@ -1,0 +1,4 @@
+.direnv/
+*.qmlc
+*.jsc
+.DS_Store
