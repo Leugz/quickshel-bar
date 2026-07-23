@@ -15,7 +15,7 @@ QtObject {
 
     readonly property string fontFamily: "SF Pro Display"
     readonly property string fontFamilyAlt: "Symbols Nerd Font"
-    readonly property string launcherFont: "FiraCode Nerd Font"
+    readonly property string launcherFont: "SF Mono"
     readonly property int fontSize: 14
 
     readonly property int barHeight: 37

@@ -9,76 +9,106 @@ PopupWindow {
     property bool shown: false
     property date viewDate: new Date()
     property Item target: null
-
+    
+    property alias isHovered: hoverHandler.hovered 
+    
     visible: shown || bg.opacity > 0
     color: "transparent"
-
-    implicitWidth: bg.implicitWidth
+    implicitWidth: bg.width
     implicitHeight: bg.implicitHeight
-
+    
     anchor {
-        item: root.target 
-        edges: Edges.Bottom 
-        gravity: Edges.Bottom | Edges.Right 
+        item: root.target
+        edges: Edges.Bottom
+        gravity: Edges.Bottom 
         margins.top: 6
     }
 
-    function daysInMonth(y, m) { return new Date(y, m + 1, 0).getDate(); }
-    function isSameDay(a, b) {
-        return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-    }
-
-    function weekNumber(d) {
-        const onejan = new Date(d.getFullYear(), 0, 1);
-        return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
-    }
-
-    function buildWeeks() {
+    function buildGrid() {
         const y = viewDate.getFullYear();
         const m = viewDate.getMonth();
-        const firstDow = new Date(y, m, 1).getDay();
-        const totalDays = daysInMonth(y, m);
-        const weeks = [];
-        let week = [];
-
-        for (let i = 0; i < firstDow; i++) week.push(null);
-        for (let day = 1; day <= totalDays; day++) {
-            week.push(new Date(y, m, day));
-            if (week.length === 7) { weeks.push(week); week = []; }
+        const firstDay = new Date(y, m, 1);
+        const startDow = firstDay.getDay(); 
+        
+        let daysArr = [];
+        const today = new Date();
+        
+        const prevMonthTotal = new Date(y, m, 0).getDate();
+        for (let i = startDow - 1; i >= 0; i--) {
+            daysArr.push({
+                dayText: String(prevMonthTotal - i),
+                isCurrentMonth: false,
+                isToday: false
+            });
         }
-        if (week.length > 0) {
-            while (week.length < 7) week.push(null);
-            weeks.push(week);
+        
+        const totalDays = new Date(y, m + 1, 0).getDate();
+        for (let i = 1; i <= totalDays; i++) {
+            const isT = y === today.getFullYear() && m === today.getMonth() && i === today.getDate();
+            daysArr.push({
+                dayText: String(i),
+                isCurrentMonth: true,
+                isToday: isT
+            });
         }
-        return weeks;
+        
+        let nextDayNum = 1;
+        while (daysArr.length < 42) {
+            daysArr.push({
+                dayText: String(nextDayNum++),
+                isCurrentMonth: false,
+                isToday: false
+            });
+        }
+        
+        return daysArr;
     }
+    
+    property var days: buildGrid()
+    onViewDateChanged: days = buildGrid()
 
-    property var weeks: buildWeeks()
-    onViewDateChanged: weeks = buildWeeks()
+    HoverHandler { id: hoverHandler } 
 
     Rectangle {
         id: bg
-
+        width: mainCol.implicitWidth + 24
+        
+        // --- Drawer Slide Animation Fix ---
+        // Wayland allows 1 pixel, but bans 0. This gives us the exact Notification Center slide!
+        implicitHeight: root.shown ? mainCol.implicitHeight + 24 : 1
+        clip: true 
+        
         opacity: root.shown ? 1.0 : 0.0
-        scale: root.shown ? 1.0 : 0.95
-        transformOrigin: Item.Top
         
         Behavior on opacity { NumberAnimation { duration: 150 } }
-        Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-
-        radius: 10
-        color: Theme.base
-        border.color: Theme.surface2
+        Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
+        
+        // Deep Glass Base
+        color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
+        border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
         border.width: 1
+        radius: Theme.moduleRadius + 4
         
-        implicitWidth: grid.implicitWidth + 24
-        implicitHeight: content.implicitHeight + 24
+        Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
 
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.NoButton
+        // Indigo Glow Overlay
+        Rectangle {
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: parent.width * 0.6 
+            radius: parent.radius
+            
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: Theme.blue }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+            
+            opacity: hoverHandler.hovered ? 0.25 : 0.15 
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
         }
-        
+
         WheelHandler {
             onWheel: event => {
                 const d = root.viewDate;
@@ -86,75 +116,131 @@ PopupWindow {
                 root.viewDate = new Date(d.getFullYear(), d.getMonth() + delta, 1);
             }
         }
-
+        
         ColumnLayout {
-            id: content
-            anchors.centerIn: parent
-            spacing: 6
+            id: mainCol
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.margins: 12
+            spacing: 12 
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: Qt.formatDateTime(root.viewDate, "MMMM yyyy")
-                color: Theme.text
-                font.bold: true
-                font.pixelSize: 14
+            // Header Row
+            RowLayout {
+                Layout.fillWidth: true
+                
+                Row {
+                    spacing: 4
+                    Text {
+                        text: Qt.formatDateTime(root.viewDate, "MMMM")
+                        color: Theme.text
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 14 
+                        font.bold: true
+                    }
+                    Text {
+                        text: Qt.formatDateTime(root.viewDate, "yyyy")
+                        color: Theme.blue
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 14 
+                        font.bold: true
+                    }
+                }
+
+                Item { Layout.fillWidth: true } 
+
+                Row {
+                    spacing: 10
+                    
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "❮" 
+                        color: prevMouse.containsMouse ? Theme.mauve : Theme.unactive
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 12
+                        font.bold: true
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                        MouseArea {
+                            id: prevMouse
+                            anchors.fill: parent
+                            anchors.margins: -6
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.viewDate = new Date(root.viewDate.getFullYear(), root.viewDate.getMonth() - 1, 1)
+                        }
+                    }
+                    
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "TODAY"
+                        color: todayMouse.containsMouse ? Theme.mauve : Theme.text
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 10
+                        font.bold: true
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                        MouseArea {
+                            id: todayMouse
+                            anchors.fill: parent
+                            anchors.margins: -6
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.viewDate = new Date()
+                        }
+                    }
+
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "❯"
+                        color: nextMouse.containsMouse ? Theme.mauve : Theme.unactive
+                        font.family: Theme.fontFamily
+                        font.pixelSize: 12
+                        font.bold: true
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                        MouseArea {
+                            id: nextMouse
+                            anchors.fill: parent
+                            anchors.margins: -6
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.viewDate = new Date(root.viewDate.getFullYear(), root.viewDate.getMonth() + 1, 1)
+                        }
+                    }
+                }
             }
 
+            // Compact Grid
             GridLayout {
-                id: grid
-                columns: 8
-                rowSpacing: 4
-                columnSpacing: 10
-
-                Text { text: "W"; color: Theme.mauve; font.bold: true; font.pixelSize: 11 }
+                columns: 7
+                columnSpacing: 10 
+                rowSpacing: 4     
                 
                 Repeater {
                     model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
                     delegate: Text {
-                        required property string modelData
                         text: modelData
-                        color: Theme.lightblue
-                        font.bold: true
+                        color: Theme.lightblue 
+                        font.family: Theme.fontFamily
                         font.pixelSize: 11
+                        font.bold: true
                         Layout.alignment: Qt.AlignHCenter
                     }
                 }
-
+                
                 Repeater {
-                    model: root.weeks
+                    model: root.days
                     delegate: Item {
-                        required property var modelData
-                        required property int index
-                        Layout.columnSpan: 8
-                        Layout.fillWidth: true
-                        implicitHeight: weekRow.implicitHeight
-
-                        RowLayout {
-                            id: weekRow
-                            anchors.fill: parent
-                            spacing: 10
-
-                            Text {
-                                text: "W" + root.weekNumber(modelData.find(d => d !== null) || root.viewDate)
-                                color: Theme.mauve
-                                font.bold: true
-                                font.pixelSize: 11
-                                Layout.preferredWidth: 18
-                            }
-
-                            Repeater {
-                                model: modelData
-                                delegate: Text {
-                                    required property var modelData
-                                    Layout.alignment: Qt.AlignHCenter
-                                    Layout.preferredWidth: 18
-                                    text: modelData ? modelData.getDate() : ""
-                                    horizontalAlignment: Text.AlignHCenter
-                                    font.pixelSize: 12
-                                    font.underline: modelData && root.isSameDay(modelData, new Date())
-                                    font.bold: modelData && root.isSameDay(modelData, new Date())
-                                    color: modelData && root.isSameDay(modelData, new Date()) ? Theme.red : Theme.text
-                                }
+                        implicitWidth: 18 
+                        implicitHeight: 18 
+                        
+                        Text {
+                            anchors.centerIn: parent
+                            text: modelData.dayText
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 12
+                            font.bold: modelData.isCurrentMonth
+                            color: {
+                                if (modelData.isToday) return Theme.mauve; 
+                                if (modelData.isCurrentMonth) return Theme.text;
+                                return Theme.surface2; 
                             }
                         }
                     }
