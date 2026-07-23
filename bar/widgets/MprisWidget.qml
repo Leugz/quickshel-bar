@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Mpris
 import "../"
 import "../windows"
@@ -33,40 +35,47 @@ Item {
     
     Row {
         id: row
-        spacing: 8
+        // spacing: 12
         anchors.centerIn: parent
 
-        Text {
-            text: {
-                if (!root.activePlayer) return "";
-                return root.activePlayer.isPlaying ? "" : ""; 
+        Item {
+            id: playPauseBtn
+            width: 22
+            height: 22
+            anchors.verticalCenter: parent.verticalCenter
+        
+            Text {
+                anchors.centerIn: parent
+                text: root.activePlayer && root.activePlayer.isPlaying ? "" : ""
+                color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.lightblue : Theme.unactive
+                font.family: Theme.fontFamilyAlt
+                // font.pixelSize: 13
             }
-            color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.lightblue : Theme.unactive
-            font.family: Theme.fontFamilyAlt
-            font.pixelSize: Theme.fontSize
-
+        
             MouseArea {
                 anchors.fill: parent
+                anchors.margins: -6
                 cursorShape: Qt.PointingHandCursor
                 onClicked: if (root.activePlayer) root.activePlayer.togglePlaying();
             }
         }
 
         Text {
+            anchors.verticalCenter: parent.verticalCenter
+            rightPadding: 12
+
             text: {
                 if (!root.activePlayer) return "";
-
                 let dynamic = root.activePlayer.trackTitle;
                 if (!dynamic) dynamic = root.activePlayer.identity || "";
-
                 if (dynamic.length > 20) dynamic = dynamic.slice(0, 19) + "\u2026";
                 return dynamic;
             }
-            color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.lightblue : Theme.unactive
+            color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.text : Theme.unactive
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSize
             font.bold: true
-
+            
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
@@ -74,6 +83,57 @@ Item {
                     root.popupOpen = true;
                     hideTimer.restart();
                 }
+            }
+        }
+
+        Item {
+            id: visualizer
+            width: barsRow.implicitWidth
+            height: 16
+            anchors.verticalCenter: parent.verticalCenter
+
+            property bool isPlaying: root.activePlayer && root.activePlayer.isPlaying
+            property var heights: [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+
+            Process {
+                id: cavaProc
+                running: visualizer.isPlaying
+                command: ["cava", "-p", Quickshell.env("HOME") + "/.config/quickshell/bar/cava_widget.conf"]
+                stdout: SplitParser {
+                    onRead: data => {
+                        if (!data) return;
+                        const vals = data.trim().split(";").filter(s => s !== "").map(Number);
+                        if (vals.length >= 9)
+                            visualizer.heights = vals.map(h => (isNaN(h) || h < 4) ? 4 : h);
+                    }
+                }
+            }
+
+            onIsPlayingChanged: if (!isPlaying) heights = [4, 4, 4, 4, 4, 4, 4, 4, 4]
+
+            Row {
+                id: barsRow
+                spacing: 3
+                anchors.verticalCenter: parent.verticalCenter
+                Repeater {
+                    model: 9
+                    Rectangle {
+                        width: 3
+                        height: visualizer.heights[index] ?? 4
+                        radius: 1.5
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: visualizer.isPlaying ? Theme.lightblue : Theme.surface2
+                        Behavior on height { NumberAnimation { duration: 50 } }
+                        Behavior on color { ColorAnimation { duration: 300 } }
+                    }
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                anchors.margins: -6
+                cursorShape: Qt.PointingHandCursor
+                onClicked: { root.popupOpen = true; hideTimer.restart(); }
             }
         }
     }
