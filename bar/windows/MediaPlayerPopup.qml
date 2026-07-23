@@ -1,26 +1,25 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell
+// import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import "../"
 
 PopupWindow {
     id: root
-
+    // WlrLayershell.namespace: "quickshell:mediaplayer"
+    
     Component.onCompleted: console.log("### POPUP COMPONENT LOADED ###")
-
     property bool shown: false
     property Item target: null
     property var activePlayer: null
     
     property alias isHovered: hoverHandler.hovered
-
     visible: shown || bg.opacity > 0
     color: "transparent"
-
     implicitWidth: bg.width
     implicitHeight: bg.height
-
+    
     anchor {
         item: root.target
         edges: Edges.Bottom
@@ -40,12 +39,31 @@ PopupWindow {
         Behavior on opacity { NumberAnimation { duration: 150 } }
         Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
         
-        radius: 12
-        color: Theme.base
-        border.color: Theme.surface2
+        color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
+        border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
         border.width: 1
+        radius: Theme.moduleRadius + 4 
+        clip: true
         
+        Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
         HoverHandler { id: hoverHandler }
+
+        Rectangle {
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: parent.width * 0.6 
+            radius: parent.radius
+            
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: Theme.blue }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+            
+            opacity: hoverHandler.hovered ? 0.25 : 0.15 
+            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
+        }
 
         Item {
             anchors.fill: parent
@@ -59,36 +77,34 @@ PopupWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 8
                 clip: true
-                color: Theme.crust
+                color: Qt.rgba(255, 255, 255, 0.05)
+                border.color: Qt.rgba(255, 255, 255, 0.1)
+                border.width: 1
                 
                 Text {
                     anchors.centerIn: parent
-                    text: "󰎆"
+                    text: ""
                     font.family: Theme.fontFamilyAlt
                     font.pixelSize: 32
-                    color: Theme.surface2
+                    color: Qt.rgba(255, 255, 255, 0.2)
                     visible: coverArtImg.status !== Image.Ready
                 }
-
+                
                 Image {
                     id: coverArtImg
                     anchors.fill: parent
                     cache: false
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
-
                     property string lastGoodSource: ""
                     source: lastGoodSource
-
                     layer.enabled: true
                     layer.effect: MultiEffect {
                         maskEnabled: true
                         maskSource: coverMask
                     }
-
-                    onStatusChanged: console.log("Cover art status:", status, source)
                 }
-
+                
                 Rectangle { 
                     id: coverMask
                     anchors.fill: coverArtImg
@@ -96,7 +112,7 @@ PopupWindow {
                     layer.enabled: true
                     visible: false
                 }
-
+                
                 Connections {
                     target: root.activePlayer
                     function onTrackArtUrlChanged() {
@@ -106,7 +122,7 @@ PopupWindow {
                         }
                     }
                 }
-
+                
                 Connections {
                     target: root
                     function onActivePlayerChanged() {
@@ -133,16 +149,19 @@ PopupWindow {
                     width: 24 
                     height: 24
                     z: 100
-
+                    
                     Text {
                         anchors.centerIn: parent
                         text: ""
                         color: closeMouse.containsMouse ? Theme.text : Theme.unactive
                         font.pixelSize: 14
+                        Behavior on color { ColorAnimation { duration: 150 } }
                     }
+                    
                     MouseArea {
                         id: closeMouse
                         anchors.fill: parent
+                        anchors.margins: -8 
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
@@ -158,7 +177,7 @@ PopupWindow {
                     anchors.right: parent.right
                     spacing: 4 
                     z: 100
-
+                    
                     Image {
                         id: appIcon
                         anchors.verticalCenter: parent.verticalCenter
@@ -168,25 +187,21 @@ PopupWindow {
                             if (!root.activePlayer || !root.activePlayer.desktopEntry) return "";
                             return Quickshell.iconPath(root.activePlayer.desktopEntry, true);
                         }
-
                         visible: source.toString() !== "" && status === Image.Ready 
                     }
-
+                    
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
                         text: {
                             if (!root.activePlayer) return "";
-
                             if (root.activePlayer.identity) return root.activePlayer.identity;
                             if (root.activePlayer.desktopEntry) return root.activePlayer.desktopEntry;
-
                             const svc = root.activePlayer.dbusName || "";
                             const match = svc.match(/^org\.mpris\.MediaPlayer2\.([^.]+)/);
                             if (match) return match[1];
-
                             return "Unknown source";
                         }
-                        color: Theme.surface2
+                        color: Qt.rgba(255, 255, 255, 0.5)
                         font.family: Theme.fontFamily
                         font.pixelSize: 11
                         font.bold: true
@@ -215,9 +230,9 @@ PopupWindow {
                     Text {
                         width: parent.width
                         text: root.activePlayer ? (root.activePlayer.trackArtist || "") : ""
-                        color: Theme.unactive
+                        color: Qt.rgba(255, 255, 255, 0.7) 
                         font.family: Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: 13
                         horizontalAlignment: Text.AlignHCenter
                         elide: Text.ElideRight
                     }
@@ -227,48 +242,62 @@ PopupWindow {
                     Row {
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 20
-
+                        
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "󰒮" 
-                            color: Theme.text
+                            color: prevMouse.containsMouse ? Theme.text : Theme.unactive
                             font.family: Theme.fontFamilyAlt
                             font.pixelSize: 22
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                            
                             MouseArea {
+                                id: prevMouse
                                 anchors.fill: parent
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: if (root.activePlayer) root.activePlayer.previous()
                             }
                         }
-
+                        
                         Rectangle {
                             width: 36
                             height: 36
-                            radius: 8
-                            color: Theme.mauve 
-                            
+                            radius: 18
+                            color: playMouse.containsMouse ? Qt.rgba(Theme.blue.r, Theme.blue.g, Theme.blue.b, 0.4) : Qt.rgba(255, 255, 255, 0.1)
+                            border.color: playMouse.containsMouse ? Theme.blue : Qt.rgba(255, 255, 255, 0.2)
+                            border.width: 1
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                            Behavior on border.color { ColorAnimation { duration: 150 } }
+
                             Text {
                                 anchors.centerIn: parent
-                                text: root.activePlayer && root.activePlayer.isPlaying ? "" : ""
-                                color: Theme.crust 
+                                text: root.activePlayer && root.activePlayer.isPlaying ? "󰏤" : "󰐊"
+                                color: Theme.text 
                                 font.family: Theme.fontFamilyAlt
                                 font.pixelSize: 20
                             }
                             MouseArea {
+                                id: playMouse
                                 anchors.fill: parent
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: if (root.activePlayer) root.activePlayer.togglePlaying()
                             }
                         }
-
+                        
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "󰒭" 
-                            color: Theme.text
+                            text: "󰒭"
+                            color: nextMouse.containsMouse ? Theme.text : Theme.unactive
                             font.family: Theme.fontFamilyAlt
                             font.pixelSize: 22
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                            
                             MouseArea {
+                                id: nextMouse
                                 anchors.fill: parent
+                                hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: if (root.activePlayer) root.activePlayer.next()
                             }

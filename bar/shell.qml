@@ -58,6 +58,8 @@ Scope {
             property var centers: centerInstantiator
             property int screenIndex: index
 
+            WlrLayershell.namespace: "quickshell:bar"
+
             anchors.top: true
             anchors.left: true
             anchors.right: true
