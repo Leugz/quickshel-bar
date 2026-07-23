@@ -7,8 +7,9 @@ import "../components"
 PanelWindow {
     id: root
     required property NotificationServer server
-
     property var linkedCenter
+
+    WlrLayershell.namespace: "quickshell:notifoverlay"
 
     anchors {
         top: true
@@ -52,9 +53,15 @@ PanelWindow {
                 Connections {
                     target: root.linkedCenter
                     function onIsOpenChanged() {
-                        if (globalNotificationCenter.isOpen) {
+                        if (root.linkedCenter && root.linkedCenter.isOpen) {
                             toastWrapper.expired = true;
                         }
+                    }
+                }
+
+                Component.onCompleted: {
+                    if (root.linkedCenter && root.linkedCenter.isOpen) {
+                        toastWrapper.expired = true;
                     }
                 }
                 

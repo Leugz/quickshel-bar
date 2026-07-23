@@ -31,7 +31,6 @@ PanelWindow {
     
     exclusionMode: ExclusionMode.Ignore
 
-    // --- NEW: Hover & Auto-Hide Logic ---
     Timer {
         id: hideTimer
         interval: 2000
@@ -42,14 +41,13 @@ PanelWindow {
         id: hoverHandler
         onHoveredChanged: {
             if (hovered) {
-                hideTimer.stop(); // Stops closing if your mouse is inside
+                hideTimer.stop();
             } else if (root.isOpen) {
-                hideTimer.restart(); // Starts the countdown when your mouse leaves
+                hideTimer.restart();
             }
         }
     }
 
-    // Automatically triggers the timer when opened from the top bar
     onIsOpenChanged: {
         if (isOpen && !hoverHandler.hovered) {
             hideTimer.restart();
@@ -62,11 +60,11 @@ PanelWindow {
         id: innerBg
         width: parent.width
         height: Math.min(500, innerLayout.implicitHeight + 32)
-        anchors.bottom: parent.bottom // Anchors bottom so it pulls down
+        anchors.bottom: parent.bottom
 
         clip: true
         
-        color: Qt.rgba(30/255, 30/255, 46/255, 0.6) // More transparent for blur
+        color: Qt.rgba(30/255, 30/255, 46/255, 0.6)
         border.color: Theme.surface2
         border.width: 1
         radius: Theme.moduleRadius
@@ -82,7 +80,6 @@ PanelWindow {
             anchors.margins: 16
             spacing: 16
             
-            // Header
             RowLayout {
                 Layout.fillWidth: true
                 
@@ -95,23 +92,30 @@ PanelWindow {
                     Layout.fillWidth: true
                 }
                 
-                // Clear All Button
                 Rectangle {
-                    width: 80
-                    height: 24
-                    radius: 4
-                    color: Theme.surface2
-                    
+                    width: 84
+                    height: 26
+                    radius: 6
+                    color: clearMouse.containsMouse ? Theme.maroon : Qt.rgba(127, 127, 127, 0.08)
+                    border.color: clearMouse.containsMouse ? Theme.maroon : Qt.rgba(255, 255, 255, 0.12)
+                    border.width: 1
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
+                    Behavior on border.color { ColorAnimation { duration: 150 } }
+
                     Text {
                         anchors.centerIn: parent
                         text: "Clear All"
-                        color: Theme.text
+                        color: clearMouse.containsMouse ? Theme.base : Theme.text
                         font.family: Theme.fontFamily
                         font.pixelSize: 12
+                        font.bold: true
                     }
-                    
+
                     MouseArea {
+                        id: clearMouse
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             root.isOpen = false;
@@ -122,7 +126,6 @@ PanelWindow {
                 }
             }
             
-            // FIXED: Notification History (Replaced ScrollView/Repeater with ListView)
             ListView {
                 id: popupList
                 Layout.fillWidth: true
@@ -138,7 +141,6 @@ PanelWindow {
                     width: popupList.width
                 }
 
-                // Smooth animations for items arriving/leaving the center
                 add: Transition {
                     NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 200 }
                 }
