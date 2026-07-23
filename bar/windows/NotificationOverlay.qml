@@ -41,9 +41,11 @@ PanelWindow {
                 
                 clip: true
                 
+                HoverHandler { id: wrapperHover }
+
                 Timer {
                     interval: 5000
-                    running: true
+                    running: !wrapperHover.hovered 
                     onTriggered: toastWrapper.expired = true
                 }
                 
