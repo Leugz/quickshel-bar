@@ -93,7 +93,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
 
             property bool isPlaying: root.activePlayer && root.activePlayer.isPlaying
-            property var heights: [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+            property var heights: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
 
             Process {
                 id: cavaProc
@@ -109,7 +109,7 @@ Item {
                 }
             }
 
-            onIsPlayingChanged: if (!isPlaying) heights = [4, 4, 4, 4, 4, 4, 4, 4, 4]
+            onIsPlayingChanged: if (!isPlaying) heights = [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
 
             Row {
                 id: barsRow
