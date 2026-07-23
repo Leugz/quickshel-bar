@@ -33,23 +33,20 @@ PanelWindow {
         Repeater {
             model: root.server.trackedNotifications
             
-            // Wraps the Toast in a smart container that handles the visibility logic
             delegate: Item {
                 id: toastWrapper
                 width: parent.width
                 
                 property bool expired: false
                 
-                clip: true // Prevents the toast from spilling out during the shrink animation
+                clip: true
                 
-                // 1. Hide automatically after 5 seconds
                 Timer {
                     interval: 5000
                     running: true
                     onTriggered: toastWrapper.expired = true
                 }
                 
-                // 2. Hide immediately if the user opens the Notification Center
                 Connections {
                     target: root.linkedCenter
                     function onIsOpenChanged() {
@@ -65,7 +62,6 @@ PanelWindow {
                     }
                 }
                 
-                // 3. Smoothly fade out and shrink to 0 height when expired
                 opacity: expired ? 0 : 1
                 visible: opacity > 0
                 height: expired ? 0 : toast.implicitHeight

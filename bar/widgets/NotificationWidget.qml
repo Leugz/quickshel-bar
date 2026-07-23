@@ -7,16 +7,12 @@ Text {
     required property NotificationServer server
     property var parentWindow
     
-    // 1. The Invisible Tracker
-    // This actively listens to the model's background signals to update its own count
     Repeater {
         id: notifTracker
         model: root.server.trackedNotifications
-        delegate: Item {} // Spawns an empty, invisible item just to keep tally
+        delegate: Item {}
     }
 
-    // 2. Dynamic Bindings
-    // Now wired to 'notifTracker.count', forcing the UI to update in real-time
     text: notifTracker.count > 0 ? "󱅫" : "󰂜"
     color: notifTracker.count > 0 ? Theme.mauve : Theme.text
     

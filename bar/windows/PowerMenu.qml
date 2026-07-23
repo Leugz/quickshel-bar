@@ -31,7 +31,7 @@ PanelWindow {
 
         Row {
             anchors.centerIn: parent
-            spacing: 0 // wlogout's buttons sit flush against each other
+            spacing: 0
 
             Repeater {
                 model: [

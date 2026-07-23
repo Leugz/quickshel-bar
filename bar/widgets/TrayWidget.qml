@@ -11,7 +11,7 @@ Row {
     
     property var parentWindow
 
-    property int threshold: 3 // icons to drawer
+    property int threshold: 3
 
     property bool isPinned: false
     property bool isHovered: hoverHandler.hovered
