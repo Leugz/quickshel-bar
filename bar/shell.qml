@@ -17,7 +17,7 @@ Scope {
         bodySupported: true
         actionsSupported: true
         imageSupported: true
-    
+
         onNotification: notification => {
             notification.tracked = true
         }
@@ -28,14 +28,23 @@ Scope {
         id: globalPowerMenu
     }
 
-    NotificationOverlay {
-        id: globalNotificationOverlay
-        server: notifServer
+    Instantiator {
+        model: Quickshell.screens
+        delegate: NotificationOverlay {
+            server: notifServer
+            screen: modelData
+
+            property var linkedCenter: centerInstantiator.objectAt(index)
+        }
     }
 
-    NotificationCenter {
-        id: globalNotificationCenter
-        server: notifServer
+    Instantiator {
+        id: centerInstantiator
+        model: Quickshell.screens
+        delegate: NotificationCenter {
+            server: notifServer
+            screen: modelData
+        }
     }
 
     // --- Multi-Monitor Bar Setup ---
@@ -45,6 +54,9 @@ Scope {
         delegate: PanelWindow {
             id: bar
             screen: modelData
+
+            property var centers: centerInstantiator
+            property int screenIndex: index
 
             anchors.top: true
             anchors.left: true
@@ -123,6 +135,7 @@ Scope {
                         CalendarWidget {}
                         NotificationWidget {
                             server: notifServer
+                            parentWindow: bar
                         }
                         PowerButton {}
                     }

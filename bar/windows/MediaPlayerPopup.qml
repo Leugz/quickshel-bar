@@ -249,7 +249,7 @@ PopupWindow {
                             
                             Text {
                                 anchors.centerIn: parent
-                                text: root.activePlayer && root.activePlayer.isPlaying ? "󰏤" : "󰐊"
+                                text: root.activePlayer && root.activePlayer.isPlaying ? "" : ""
                                 color: Theme.crust 
                                 font.family: Theme.fontFamilyAlt
                                 font.pixelSize: 20

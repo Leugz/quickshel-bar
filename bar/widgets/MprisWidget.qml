@@ -39,7 +39,7 @@ Item {
         Text {
             text: {
                 if (!root.activePlayer) return "";
-                return root.activePlayer.isPlaying ? "▶" : "⏸"; 
+                return root.activePlayer.isPlaying ? "" : ""; 
             }
             color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.lightblue : Theme.unactive
             font.family: Theme.fontFamilyAlt
