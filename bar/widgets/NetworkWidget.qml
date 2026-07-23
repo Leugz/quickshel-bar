@@ -9,7 +9,7 @@ Text {
     text: NetworkStatus.state === "wifi" ? ""
         : NetworkStatus.state === "ethernet" ? "󰈀"
         : "󰤭"
-    color: NetworkStatus.state === "disconnected" ? Theme.surface2 : Theme.blue
+    color: NetworkStatus.state === "disconnected" ? Theme.surface2 : Theme.indigo
     font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize
     font.bold: true

@@ -35,7 +35,6 @@ Item {
     
     Row {
         id: row
-        // spacing: 12
         anchors.centerIn: parent
 
         Item {
@@ -47,9 +46,8 @@ Item {
             Text {
                 anchors.centerIn: parent
                 text: root.activePlayer && root.activePlayer.isPlaying ? "" : ""
-                color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.lightblue : Theme.unactive
+                color: (root.activePlayer && root.activePlayer.isPlaying) ? Theme.cyan : Theme.unactive
                 font.family: Theme.fontFamilyAlt
-                // font.pixelSize: 13
             }
         
             MouseArea {
@@ -122,7 +120,7 @@ Item {
                         height: visualizer.heights[index] ?? 4
                         radius: 1.5
                         anchors.verticalCenter: parent.verticalCenter
-                        color: visualizer.isPlaying ? Theme.lightblue : Theme.surface2
+                        color: visualizer.isPlaying ? Theme.cyan : Theme.surface2
                         Behavior on height { NumberAnimation { duration: 50 } }
                         Behavior on color { ColorAnimation { duration: 300 } }
                     }

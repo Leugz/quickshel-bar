@@ -5,7 +5,7 @@ import "../windows"
 Item {
     id: root
     property date now: new Date()
-    property bool popupOpen: false // Controls the popup state
+    property bool popupOpen: false
     
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
@@ -22,7 +22,7 @@ Item {
         spacing: 6
         
         Text {
-            text: "󰃭" // Calendar icon
+            text: "󰃭"
             color: Theme.text
             font.family: Theme.fontFamilyAlt
             font.pixelSize: Theme.fontSize
@@ -36,10 +36,9 @@ Item {
         }
     }
 
-    // Delay timer to allow the mouse to travel to the popup
     Timer {
         id: hideTimer
-        interval: 300 // 300ms grace period
+        interval: 300
         onTriggered: {
             if (!popup.isHovered) {
                 root.popupOpen = false;
@@ -65,7 +64,6 @@ Item {
         shown: root.popupOpen
         viewDate: root.now
         
-        // Tells the timer to stop counting if the mouse is on the calendar
         onIsHoveredChanged: {
             if (isHovered) {
                 hideTimer.stop();

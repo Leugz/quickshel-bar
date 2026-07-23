@@ -7,9 +7,8 @@ QtObject {
     readonly property color text: "#cdd6f4"
     readonly property color surface2: "#585b70"
     readonly property color unactive: "#94a3b8"
-    readonly property color blue: "#818cf8"
-    readonly property color lightblue: "#8fc4e0"
-    readonly property color red: "#f38ba8"
+    readonly property color indigo: "#818cf8"
+    readonly property color cyan: "#8fc4e0"
     readonly property color mauve: "#cba6f7"
     readonly property color maroon: "#b14d8d"
 

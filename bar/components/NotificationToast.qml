@@ -29,7 +29,7 @@ Rectangle {
         
         gradient: Gradient {
             orientation: Gradient.Horizontal
-            GradientStop { position: 0.0; color: Theme.blue }
+            GradientStop { position: 0.0; color: Theme.indigo }
             GradientStop { position: 1.0; color: "transparent" }
         }
         

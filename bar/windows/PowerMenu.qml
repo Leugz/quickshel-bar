@@ -35,8 +35,8 @@ PanelWindow {
 
             Repeater {
                 model: [
-                    { name: "Suspend", icon: "\uf28c", cmd: "systemctl suspend", accent: Theme.blue, edge: "left" },
-                    { name: "Logout", icon: "\udb80\udf43", cmd: "hyprctl dispatch exit", accent: Theme.lightblue, edge: "none" },
+                    { name: "Suspend", icon: "\uf28c", cmd: "systemctl suspend", accent: Theme.indigo, edge: "left" },
+                    { name: "Logout", icon: "\udb80\udf43", cmd: "hyprctl dispatch exit", accent: Theme.cyan, edge: "none" },
                     { name: "Reboot", icon: "\uead2", cmd: "systemctl reboot", accent: Theme.mauve, edge: "none" },
                     { name: "Shutdown", icon: "\uf011", cmd: "systemctl poweroff", accent: Theme.maroon, edge: "right" }
                 ]

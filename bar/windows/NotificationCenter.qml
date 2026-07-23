@@ -94,8 +94,8 @@ PanelWindow {
                     width: 84
                     height: 26
                     radius: 6
-                    color: clearMouse.containsMouse ? Qt.alpha(Theme.blue, 0.15) : Qt.rgba(127/255, 127/255, 127/255, 0.08)
-                    border.color: clearMouse.containsMouse ? Qt.alpha(Theme.blue, 0.4) : Qt.rgba(255/255, 255/255, 255/255, 0.12)
+                    color: clearMouse.containsMouse ? Qt.alpha(Theme.indigo, 0.15) : Qt.rgba(127/255, 127/255, 127/255, 0.08)
+                    border.color: clearMouse.containsMouse ? Qt.alpha(Theme.indigo, 0.4) : Qt.rgba(255/255, 255/255, 255/255, 0.12)
                     border.width: 1
 
                     Behavior on color { ColorAnimation { duration: 150 } }
@@ -105,7 +105,7 @@ PanelWindow {
                         anchors.centerIn: parent
 
                         text: "Clear All"
-                        color: clearMouse.containsMouse ? Theme.blue : Theme.text
+                        color: clearMouse.containsMouse ? Theme.indigo : Theme.text
                         font.family: Theme.fontFamily
                         font.pixelSize: 12
                         

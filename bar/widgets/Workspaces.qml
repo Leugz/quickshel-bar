@@ -30,9 +30,9 @@ Row {
             radius: height / 2
 
             color: {
-                if (isUrgent) return Theme.red;
+                if (isUrgent) return Theme.maroon;
                 if (isActive) return Theme.mauve;
-                if (hovered) return Theme.lightblue;
+                if (hovered) return Theme.cyan;
                 return Theme.surface2;
             }
 

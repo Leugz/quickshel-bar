@@ -1,13 +1,11 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell
-// import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import "../"
 
 PopupWindow {
     id: root
-    // WlrLayershell.namespace: "quickshell:mediaplayer"
     
     Component.onCompleted: console.log("### POPUP COMPONENT LOADED ###")
     property bool shown: false
@@ -57,7 +55,7 @@ PopupWindow {
             
             gradient: Gradient {
                 orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.blue }
+                GradientStop { position: 0.0; color: Theme.indigo }
                 GradientStop { position: 1.0; color: "transparent" }
             }
             
@@ -264,8 +262,8 @@ PopupWindow {
                             width: 36
                             height: 36
                             radius: 18
-                            color: playMouse.containsMouse ? Qt.rgba(Theme.blue.r, Theme.blue.g, Theme.blue.b, 0.4) : Qt.rgba(255, 255, 255, 0.1)
-                            border.color: playMouse.containsMouse ? Theme.blue : Qt.rgba(255, 255, 255, 0.2)
+                            color: playMouse.containsMouse ? Qt.rgba(Theme.indigo.r, Theme.indigo.g, Theme.indigo.b, 0.4) : Qt.rgba(255, 255, 255, 0.1)
+                            border.color: playMouse.containsMouse ? Theme.indigo : Qt.rgba(255, 255, 255, 0.2)
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 150 } }
                             Behavior on border.color { ColorAnimation { duration: 150 } }

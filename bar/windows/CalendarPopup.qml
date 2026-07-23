@@ -73,8 +73,6 @@ PopupWindow {
         id: bg
         width: mainCol.implicitWidth + 24
         
-        // --- Drawer Slide Animation Fix ---
-        // Wayland allows 1 pixel, but bans 0. This gives us the exact Notification Center slide!
         implicitHeight: root.shown ? mainCol.implicitHeight + 24 : 1
         clip: true 
         
@@ -83,7 +81,6 @@ PopupWindow {
         Behavior on opacity { NumberAnimation { duration: 150 } }
         Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
         
-        // Deep Glass Base
         color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
         border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
         border.width: 1
@@ -91,7 +88,6 @@ PopupWindow {
         
         Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
 
-        // Indigo Glow Overlay
         Rectangle {
             anchors.left: parent.left
             anchors.top: parent.top
@@ -101,7 +97,7 @@ PopupWindow {
             
             gradient: Gradient {
                 orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.blue }
+                GradientStop { position: 0.0; color: Theme.indigo }
                 GradientStop { position: 1.0; color: "transparent" }
             }
             
@@ -124,7 +120,6 @@ PopupWindow {
             anchors.margins: 12
             spacing: 12 
 
-            // Header Row
             RowLayout {
                 Layout.fillWidth: true
                 
@@ -139,7 +134,7 @@ PopupWindow {
                     }
                     Text {
                         text: Qt.formatDateTime(root.viewDate, "yyyy")
-                        color: Theme.blue
+                        color: Theme.indigo
                         font.family: Theme.fontFamily
                         font.pixelSize: 14 
                         font.bold: true
@@ -207,7 +202,6 @@ PopupWindow {
                 }
             }
 
-            // Compact Grid
             GridLayout {
                 columns: 7
                 columnSpacing: 10 
@@ -217,7 +211,7 @@ PopupWindow {
                     model: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
                     delegate: Text {
                         text: modelData
-                        color: Theme.lightblue 
+                        color: Theme.cyan 
                         font.family: Theme.fontFamily
                         font.pixelSize: 11
                         font.bold: true
