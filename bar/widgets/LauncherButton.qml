@@ -5,7 +5,7 @@ import Quickshell
 
 Text {
     id: root
-    text: ""
+    text: "󰣇"
     color: Theme.indigo
     font.family: Theme.launcherFont
     font.pixelSize: 18

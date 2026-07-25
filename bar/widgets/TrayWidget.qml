@@ -34,7 +34,7 @@ Row {
 
         Text {
             anchors.centerIn: parent
-            text: root.isPinned ? "┃" : (root.isOpen ? "" : "") 
+            text: root.isPinned ? "󱅛" : (root.isOpen ? "" : "") 
             color: root.isPinned ? Theme.mauve : Theme.text
             font.family: Theme.fontFamilyAlt
             font.pixelSize: 18
