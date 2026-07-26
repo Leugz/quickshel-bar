@@ -14,6 +14,17 @@ Singleton {
         if (ready) sink.audio.muted = !sink.audio.muted;
     }
 
+    function setVolume(v) {
+        if (!ready) return;
+        sink.audio.volume = Math.max(0, Math.min(1, v));
+    }
+    
+    readonly property var sinks: Pipewire.nodes.values.filter(n => n.isSink && !n.isStream && n.audio)
+    
+    function setSink(node) {
+        Pipewire.preferredDefaultAudioSink = node;
+    }
+
     function changeVolume(deltaPercent) {
         if (!ready) return;
         let v = sink.audio.volume + deltaPercent / 100;
