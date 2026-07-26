@@ -114,7 +114,7 @@ Item {
                 spacing: 3
                 anchors.verticalCenter: parent.verticalCenter
                 Repeater {
-                    model: 9
+                    model: 10
                     Rectangle {
                         width: 3
                         height: visualizer.heights[index] ?? 4

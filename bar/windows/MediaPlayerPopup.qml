@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.Mpris
+import Quickshell.Io
 import "../"
 
 PopupWindow {
@@ -170,40 +171,75 @@ PopupWindow {
                     }
                 }
 
-                Row {
+                Item {
                     anchors.bottom: parent.bottom
                     anchors.right: parent.right
-                    spacing: 4 
+                    width: appContent.implicitWidth
+                    height: appContent.implicitHeight
                     z: 100
                     
-                    Image {
-                        id: appIcon
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 20
-                        height: 20
-                        source: {
-                            if (!root.activePlayer || !root.activePlayer.desktopEntry) return "";
-                            return Quickshell.iconPath(root.activePlayer.desktopEntry, true);
+                    Row {
+                        id: appContent
+                        anchors.centerIn: parent
+                        spacing: 4
+                        
+                        Image {
+                            id: appIcon
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 20
+                            height: 20
+                            source: {
+                                if (!root.activePlayer || !root.activePlayer.desktopEntry) return "";
+                                return Quickshell.iconPath(root.activePlayer.desktopEntry, true);
+                            }
+                            visible: source.toString() !== "" && status === Image.Ready 
                         }
-                        visible: source.toString() !== "" && status === Image.Ready 
+                        
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: {
+                                if (!root.activePlayer) return "";
+                                if (root.activePlayer.identity) return root.activePlayer.identity;
+                                if (root.activePlayer.desktopEntry) return root.activePlayer.desktopEntry;
+                                const svc = root.activePlayer.dbusName || "";
+                                const match = svc.match(/^org\.mpris\.MediaPlayer2\.([^.]+)/);
+                                if (match) return match[1];
+                                return "Unknown source";
+                            }
+                            color: focusMouse.containsMouse ? Theme.lightblue : Qt.rgba(255, 255, 255, 0.5) 
+                            font.family: Theme.fontFamily
+                            font.pixelSize: 11
+                            font.bold: true
+                            visible: !appIcon.visible 
+                            
+                            Behavior on color { ColorAnimation { duration: 150 } }
+                        }
                     }
-                    
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: {
-                            if (!root.activePlayer) return "";
-                            if (root.activePlayer.identity) return root.activePlayer.identity;
-                            if (root.activePlayer.desktopEntry) return root.activePlayer.desktopEntry;
-                            const svc = root.activePlayer.dbusName || "";
-                            const match = svc.match(/^org\.mpris\.MediaPlayer2\.([^.]+)/);
-                            if (match) return match[1];
-                            return "Unknown source";
+
+                    MouseArea {
+                        id: focusMouse
+                        anchors.fill: parent
+                        anchors.margins: -6
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        
+                        onClicked: {
+                            if (!root.activePlayer) return;
+                            
+                            const desktopEntry = root.activePlayer.desktopEntry || "";
+                            const appName = (desktopEntry || root.activePlayer.identity || "").toLowerCase();
+                            if (!appName) return;
+                            
+                            if (desktopEntry) {
+                                Quickshell.execDetached(["gtk-launch", desktopEntry]);
+                            }
+                            
+                            Quickshell.execDetached([appName]);
+                            
+                            Quickshell.execDetached(["hyprctl", "dispatch", "focuswindow", "class:.*" + appName + ".*"]);
+                            
+                            if (root.target) root.target.popupOpen = false;
                         }
-                        color: Qt.rgba(255, 255, 255, 0.5)
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 11
-                        font.bold: true
-                        visible: !appIcon.visible 
                     }
                 }
 
