@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../"
+import "../components"
 
 PopupWindow {
     id: root
@@ -10,7 +11,7 @@ PopupWindow {
     property date viewDate: new Date()
     property Item target: null
     
-    property alias isHovered: hoverHandler.hovered 
+    property alias isHovered: bg.hovered
     
     visible: shown || bg.opacity > 0
     color: "transparent"
@@ -67,43 +68,17 @@ PopupWindow {
     property var days: buildGrid()
     onViewDateChanged: days = buildGrid()
 
-    HoverHandler { id: hoverHandler } 
-
-    Rectangle {
+    GlassPanel {
         id: bg
         width: mainCol.implicitWidth + 24
-        
+        radius: Theme.moduleRadius + 4
+        clip: true
+
         implicitHeight: root.shown ? mainCol.implicitHeight + 24 : 1
-        clip: true 
-        
         opacity: root.shown ? 1.0 : 0.0
-        
+
         Behavior on opacity { NumberAnimation { duration: 150 } }
         Behavior on implicitHeight { NumberAnimation { duration: 300; easing.type: Easing.OutExpo } }
-        
-        color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
-        border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
-        border.width: 1
-        radius: Theme.moduleRadius + 4
-        
-        Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: parent.width * 0.6 
-            radius: parent.radius
-            
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.indigo }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-            
-            opacity: hoverHandler.hovered ? 0.25 : 0.15 
-            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
-        }
 
         WheelHandler {
             onWheel: event => {

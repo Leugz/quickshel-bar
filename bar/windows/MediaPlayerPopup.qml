@@ -4,16 +4,16 @@ import Quickshell
 import Quickshell.Services.Mpris
 import Quickshell.Io
 import "../"
+import "../components"
 
 PopupWindow {
     id: root
-    
-    Component.onCompleted: console.log("### POPUP COMPONENT LOADED ###")
+
     property bool shown: false
     property Item target: null
     property var activePlayer: null
     
-    property alias isHovered: hoverHandler.hovered
+    property alias isHovered: bg.hovered
     visible: shown || bg.opacity > 0
     color: "transparent"
     implicitWidth: bg.width
@@ -26,43 +26,19 @@ PopupWindow {
         margins.top: 6
     }
 
-    Rectangle {
+    GlassPanel {
         id: bg
         width: 350
         height: 115
-        
+        radius: Theme.moduleRadius + 4
+        clip: true
+
         opacity: root.shown && root.activePlayer ? 1.0 : 0.0
         scale: root.shown && root.activePlayer ? 1.0 : 0.95
         transformOrigin: Item.Top
-        
+
         Behavior on opacity { NumberAnimation { duration: 150 } }
         Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-        
-        color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
-        border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
-        border.width: 1
-        radius: Theme.moduleRadius + 4 
-        clip: true
-        
-        Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
-        HoverHandler { id: hoverHandler }
-
-        Rectangle {
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: parent.width * 0.6 
-            radius: parent.radius
-            
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.indigo }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-            
-            opacity: hoverHandler.hovered ? 0.25 : 0.15 
-            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
-        }
 
         Item {
             anchors.fill: parent
@@ -82,7 +58,7 @@ PopupWindow {
                 
                 Text {
                     anchors.centerIn: parent
-                    text: ""
+                    text: ""
                     font.family: Theme.fontFamilyAlt
                     font.pixelSize: 32
                     color: Qt.rgba(255, 255, 255, 0.2)
@@ -151,7 +127,7 @@ PopupWindow {
                     
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: ""
                         color: closeMouse.containsMouse ? Theme.text : Theme.unactive
                         font.pixelSize: 14
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -222,23 +198,28 @@ PopupWindow {
                         anchors.margins: -6
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        
-                        onClicked: {
-                            if (!root.activePlayer) return;
-                            
-                            const desktopEntry = root.activePlayer.desktopEntry || "";
-                            const appName = (desktopEntry || root.activePlayer.identity || "").toLowerCase();
-                            if (!appName) return;
-                            
-                            if (desktopEntry) {
-                                Quickshell.execDetached(["gtk-launch", desktopEntry]);
+                        onClicked: if (root.activePlayer) focusProc.running = true
+                    }
+                }
+
+                Process {
+                    id: focusProc
+                    command: ["hyprctl", "clients", "-j"]
+                    stdout: StdioCollector {
+                        onStreamFinished: {
+                            try {
+                                const needle = (root.activePlayer.desktopEntry || root.activePlayer.identity || "").toLowerCase();
+                                if (!needle) return;
+                                const match = JSON.parse(text).find(c =>
+                                    c.class.toLowerCase().includes(needle) || c.title.toLowerCase().includes(needle)
+                                );
+                                if (match) {
+                                    Quickshell.execDetached(["hyprctl", "dispatch", "focuswindow", "address:" + match.address]);
+                                    if (root.target) root.target.popupOpen = false;
+                                }
+                            } catch (e) {
+                                console.log("focus lookup failed:", e);
                             }
-                            
-                            Quickshell.execDetached([appName]);
-                            
-                            Quickshell.execDetached(["hyprctl", "dispatch", "focuswindow", "class:.*" + appName + ".*"]);
-                            
-                            if (root.target) root.target.popupOpen = false;
                         }
                     }
                 }

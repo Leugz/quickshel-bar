@@ -1,9 +1,10 @@
 import QtQuick
 import Quickshell
-import Quickshell.Io
+// import Quickshell.Io
 import Quickshell.Services.Mpris
 import "../"
 import "../windows"
+import "../services"
 
 Item {
     id: root
@@ -90,25 +91,6 @@ Item {
             height: 16
             anchors.verticalCenter: parent.verticalCenter
 
-            property bool isPlaying: root.activePlayer && root.activePlayer.isPlaying
-            property var heights: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-
-            Process {
-                id: cavaProc
-                running: visualizer.isPlaying
-                command: ["cava", "-p", Quickshell.env("HOME") + "/.config/quickshell/bar/config/cava.conf"]
-                stdout: SplitParser {
-                    onRead: data => {
-                        if (!data) return;
-                        const vals = data.trim().split(";").filter(s => s !== "").map(Number);
-                        if (vals.length >= 9)
-                            visualizer.heights = vals.map(h => (isNaN(h) || h < 4) ? 4 : h);
-                    }
-                }
-            }
-
-            onIsPlayingChanged: if (!isPlaying) heights = [6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
-
             Row {
                 id: barsRow
                 spacing: 3
@@ -117,10 +99,10 @@ Item {
                     model: 10
                     Rectangle {
                         width: 3
-                        height: visualizer.heights[index] ?? 4
+                        height: Cava.heights[index] ?? 4
                         radius: 1.5
                         anchors.verticalCenter: parent.verticalCenter
-                        color: visualizer.isPlaying ? Theme.cyan : Theme.surface2
+                        color: Cava.isPlaying ? Theme.cyan : Theme.surface2
                         Behavior on height { NumberAnimation { duration: 50 } }
                         Behavior on color { ColorAnimation { duration: 300 } }
                     }

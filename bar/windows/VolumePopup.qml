@@ -2,69 +2,39 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import "../"
+import "../components"
 import "../services"
 
 PopupWindow {
     id: root
     property bool shown: false
     property Item target: null
-    
-    property alias isHovered: hoverHandler.hovered
 
-    // Stays visible until the slide-up animation fully finishes
+    property alias isHovered: bg.hovered
+
     visible: shown || bg.implicitHeight > 0
     color: "transparent"
     implicitWidth: bg.width
     implicitHeight: bg.implicitHeight
 
-    anchor { 
+    anchor {
         item: root.target
         edges: Edges.Bottom
-        gravity: Edges.Bottom // perfectly centers it under the volume widget
-        margins.top: 6 
+        gravity: Edges.Bottom
+        margins.top: 6
     }
 
-    HoverHandler { id: hoverHandler }
-
-    Rectangle {
+    GlassPanel {
         id: bg
         width: 280
-        
-        // --- Drawer Slide Animation Mechanics ---
-        // Uses the 1-pixel trick to safely animate on Wayland without crashing
+        radius: Theme.moduleRadius + 4
+        clip: true
+
         implicitHeight: root.shown ? mainCol.implicitHeight + 24 : 1
-        clip: true 
-        
         opacity: root.shown ? 1.0 : 0.0
-        
+
         Behavior on opacity { NumberAnimation { duration: 150 } }
         Behavior on implicitHeight { NumberAnimation { duration: 400; easing.type: Easing.OutQuart } }
-        
-        // Deep Glass Base
-        color: Qt.rgba(15/255, 15/255, 25/255, 0.4)
-        border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
-        border.width: 1
-        radius: Theme.moduleRadius + 4
-        
-        Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }
-
-        // indigo Glow Overlay
-        Rectangle {
-            anchors.left: parent.left
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: parent.width * 0.6 
-            radius: parent.radius
-            
-            gradient: Gradient {
-                orientation: Gradient.Horizontal
-                GradientStop { position: 0.0; color: Theme.indigo }
-                GradientStop { position: 1.0; color: "transparent" }
-            }
-            
-            opacity: hoverHandler.hovered ? 0.25 : 0.15 
-            Behavior on opacity { NumberAnimation { duration: 200; easing.type: Easing.OutQuart } }
-        }
 
         ColumnLayout {
             id: mainCol
@@ -74,12 +44,10 @@ PopupWindow {
             width: parent.width - 24
             spacing: 16
 
-            // --- 1. Volume Slider & Value Display ---
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 12
 
-                // Mute Toggle Icon
                 Text {
                     text: Audio.muted ? "󰝟" : "󰕾"
                     color: Audio.muted ? Theme.indigo : Theme.text
@@ -94,7 +62,6 @@ PopupWindow {
                     }
                 }
 
-                // Interactive Slider Track
                 Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 24
