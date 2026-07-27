@@ -1,8 +1,7 @@
-import "../"
-
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import "../"
 
 Row {
     id: root
@@ -52,7 +51,7 @@ Row {
                 hoverEnabled: true
                 onEntered: wsDelegate.hovered = true
                 onExited: wsDelegate.hovered = false
-                onClicked: Quickshell.execDetached(["/usr/bin/hyprctl", "dispatch", "hl.dsp.focus({workspace='" + String(modelData.id) + "'})"])
+                onClicked: Hyprland.dispatch("workspace " + modelData.id)
             }
         }
     }

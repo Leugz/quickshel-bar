@@ -71,7 +71,7 @@ PopupWindow {
                         width: parent.width
                         height: 6
                         radius: 3
-                        color: Qt.rgba(255, 255, 255, 0.1)
+                        color: Qt.rgba(1, 1, 1, 0.1)
                         anchors.verticalCenter: parent.verticalCenter
 
                         Rectangle {
@@ -116,7 +116,7 @@ PopupWindow {
                         Layout.preferredHeight: 32
                         radius: 6
                         
-                        color: modelData === Audio.sink ? Qt.alpha(Theme.indigo, 0.2) : (sinkMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.05) : "transparent")
+                        color: modelData === Audio.sink ? Qt.alpha(Theme.indigo, 0.2) : (sinkMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.05) : "transparent")
                         border.color: modelData === Audio.sink ? Qt.alpha(Theme.indigo, 0.4) : "transparent"
                         border.width: 1
                         

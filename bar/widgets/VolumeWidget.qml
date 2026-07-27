@@ -1,8 +1,8 @@
 import QtQuick
 import Quickshell
 import "../"
-import "../windows"
 import "../services"
+import "../windows"
 
 Text {
     id: root
@@ -46,7 +46,7 @@ Text {
                 root.popupOpen = !root.popupOpen;
                 
             } else if (mouse.button === Qt.MiddleButton) {
-                Quickshell.execDetached(["pavucontrol"]);
+                Quickshell.execDetached(Config.mixerCmd);
                 root.popupOpen = false; 
                 
             } else if (mouse.button === Qt.RightButton) {

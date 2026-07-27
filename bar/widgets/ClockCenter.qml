@@ -1,4 +1,5 @@
 import "../"
+import "../services"
 
 import QtQuick
 import QtQuick.Layouts
@@ -6,14 +7,6 @@ import QtQuick.Layouts
 RowLayout {
     id: root
     spacing: 4
-    property date now: new Date()
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: root.now = new Date()
-    }
 
     Text {
         text: ""
@@ -23,7 +16,7 @@ RowLayout {
     }
 
     Text {
-        text: Qt.formatDateTime(root.now, "hh:mm AP")
+        text: Qt.formatDateTime(Time.now, "hh:mm AP")
         color: Theme.text
         font.family: Theme.fontFamily
         font.pixelSize: Theme.fontSize

@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Effects
 import Quickshell
-import Quickshell.Services.Mpris
 import Quickshell.Io
+import Quickshell.Services.Mpris
 import "../"
 import "../components"
 
@@ -127,7 +127,7 @@ PopupWindow {
                     
                     Text {
                         anchors.centerIn: parent
-                        text: ""
+                        text: ""
                         color: closeMouse.containsMouse ? Theme.text : Theme.unactive
                         font.pixelSize: 14
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -182,7 +182,7 @@ PopupWindow {
                                 if (match) return match[1];
                                 return "Unknown source";
                             }
-                            color: focusMouse.containsMouse ? Theme.lightblue : Qt.rgba(255, 255, 255, 0.5) 
+                            color: focusMouse.containsMouse ? Theme.cyan : Qt.rgba(255, 255, 255, 0.5) 
                             font.family: Theme.fontFamily
                             font.pixelSize: 11
                             font.bold: true

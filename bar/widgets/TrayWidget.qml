@@ -1,9 +1,8 @@
-import "../"
-
 import QtQuick
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.SystemTray
+import "../"
 
 Row {
     id: root
@@ -11,13 +10,11 @@ Row {
     
     property var parentWindow
 
-    property int threshold: 3
-
     property bool isPinned: false
     property bool isHovered: hoverHandler.hovered
     property bool isOpen: isPinned || isHovered
     
-    property bool hasDrawer: trayRepeater.count > root.threshold
+    property bool hasDrawer: trayRepeater.count > Config.trayThreshold
 
     HoverHandler { id: hoverHandler }
 
@@ -55,7 +52,7 @@ Row {
             id: trayItemWrapper
             required property SystemTrayItem modelData
 
-            property bool isValid: modelData.id !== "nm-applet"
+            property bool isValid: !Config.trayHiddenIds.includes(modelData.id)
             
             property bool shouldShow: isValid && (!root.hasDrawer || root.isOpen)
 

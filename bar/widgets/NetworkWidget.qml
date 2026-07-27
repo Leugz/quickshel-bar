@@ -1,8 +1,8 @@
+import QtQuick
+import Quickshell
 import "../"
 import "../services"
 import "../windows"
-import QtQuick
-import Quickshell
 
 Text {
     id: root
@@ -17,7 +17,7 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["kitty", "-e", "nmtui"])
+        onClicked: Quickshell.execDetached(Config.networkCmd)
     }
 
     HoverHandler { id: hoverHandler }

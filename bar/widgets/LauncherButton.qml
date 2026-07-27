@@ -1,7 +1,6 @@
-import "../"
-
 import QtQuick
 import Quickshell
+import "../"
 
 Text {
     id: root
@@ -14,6 +13,6 @@ Text {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["wofi", "--show", "drun"])
+        onClicked: Quickshell.execDetached(Config.launcherCmd)
     }
 }

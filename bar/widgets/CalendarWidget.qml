@@ -1,21 +1,14 @@
 import QtQuick
 import "../"
+import "../services"
 import "../windows"
 
 Item {
     id: root
-    property date now: new Date()
     property bool popupOpen: false
     
     implicitWidth: row.implicitWidth
     implicitHeight: row.implicitHeight
-
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
-        onTriggered: root.now = new Date()
-    }
 
     Row {
         id: row
@@ -28,7 +21,7 @@ Item {
             font.pixelSize: Theme.fontSize
         }
         Text {
-            text: Qt.formatDateTime(root.now, "ddd. dd MMM")
+            text: Qt.formatDateTime(Time.now, "ddd. dd MMM")
             color: Theme.text
             font.family: Theme.fontFamily
             font.pixelSize: Theme.fontSize

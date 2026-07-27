@@ -15,15 +15,22 @@ Singleton {
     Process {
         id: proc
         running: false
-        command: ["bash", "-c", "nmcli -t -f TYPE,STATE,CONNECTION device status 2>/dev/null | awk -F: '($1==\"wifi\"||$1==\"ethernet\") && $2==\"connected\"{print; f=1; exit} END{if(!f) print \"none:disconnected:\"}'"]
-        
-        stdout: SplitParser {
-            onRead: data => {
-                if (!data) return;
-                const parts = data.trim().split(":");
-                const type = parts[0];
-                root.connectionName = parts[2] || "";
-                root.state = type === "wifi" ? "wifi" : type === "ethernet" ? "ethernet" : "disconnected";
+        command: ["nmcli", "-t", "-f", "TYPE,STATE,CONNECTION", "device", "status"]
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const line = text.split("\n").find(l => {
+                    const p = l.split(":");
+                    return (p[0] === "wifi" || p[0] === "ethernet") && p[1] === "connected";
+                });
+                if (line) {
+                    const p = line.split(":");
+                    root.state = p[0];
+                    root.connectionName = p[2] || "";
+                } else {
+                    root.state = "disconnected";
+                    root.connectionName = "";
+                }
             }
         }
     }

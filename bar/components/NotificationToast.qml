@@ -6,7 +6,7 @@ import "../"
 
 GlassPanel {
     id: root
-    property var notification: typeof modelData !== "undefined" ? modelData : (typeof model !== "undefined" ? model.notification : null)
+    required property var notification
     
     width: 320
     implicitHeight: layout.implicitHeight + 24

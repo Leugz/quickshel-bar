@@ -1,20 +1,16 @@
-import "../"
 import QtQuick
 import Quickshell.Services.Notifications
+import "../"
 
 Text {
     id: root
     required property NotificationServer server
-    property var parentWindow
+    property var center
     
-    Repeater {
-        id: notifTracker
-        model: root.server.trackedNotifications
-        delegate: Item {}
-    }
+    readonly property int count: server.trackedNotifications.values.length
 
-    text: notifTracker.count > 0 ? "󱅫" : "󰂜"
-    color: notifTracker.count > 0 ? Theme.mauve : Theme.text
+    text: count > 0 ? "󱅫" : "󰂜"
+    color: count > 0 ? Theme.mauve : Theme.text
     
     font.family: Theme.fontFamilyAlt
     font.pixelSize: Theme.fontSize
@@ -26,17 +22,7 @@ Text {
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                for (let i = 0; i < parentWindow.centers.count; i++) {
-                    let center = parentWindow.centers.objectAt(i);
-                    
-                    if (i === parentWindow.screenIndex) {
-                        center.isOpen = !center.isOpen;
-                    } else {
-                        center.isOpen = false;
-                    }
-                }
-            }
+            if (mouse.button === Qt.LeftButton) center.isOpen = !center.isOpen;
         }
     }
 }

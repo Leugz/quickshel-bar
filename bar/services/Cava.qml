@@ -13,7 +13,7 @@ Singleton {
 
     Process {
         running: root.isPlaying
-        command: ["cava", "-p", Quickshell.env("HOME") + "/.config/quickshell/bar/config/cava.conf"]
+        command: ["cava", "-p", Quickshell.shellDir + "/config/cava.conf"]
 
         stdout: SplitParser {
             onRead: data => {

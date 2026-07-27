@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Notifications
+import "components"
 import "widgets"
 import "windows"
 
@@ -23,111 +24,84 @@ Scope {
         }
     }
 
-    // --- Global Fullscreen Windows ---
     PowerMenu {
         id: globalPowerMenu
-    }
-
-    Instantiator {
-        model: Quickshell.screens
-        delegate: NotificationOverlay {
-            server: notifServer
-            screen: modelData
-
-            property var linkedCenter: centerInstantiator.objectAt(index)
-        }
-    }
-
-    Instantiator {
-        id: centerInstantiator
-        model: Quickshell.screens
-        delegate: NotificationCenter {
-            server: notifServer
-            screen: modelData
-        }
     }
 
     // --- Multi-Monitor Bar Setup ---
     Instantiator {
         model: Quickshell.screens
 
-        delegate: PanelWindow {
-            id: bar
-            screen: modelData
+        delegate: Scope {
+            id: screenScope
+            required property var modelData
 
-            property var centers: centerInstantiator
-            property int screenIndex: index
+            NotificationCenter {
+                id: notifCenter
+                server: notifServer
+                screen: screenScope.modelData
+            }
 
-            WlrLayershell.namespace: "quickshell:bar"
+            NotificationOverlay {
+                server: notifServer
+                screen: screenScope.modelData
+                linkedCenter: notifCenter
+            }
 
-            anchors.top: true
-            anchors.left: true
-            anchors.right: true
-            implicitHeight: Theme.barHeight
-            color: "transparent"
+            PanelWindow {
+                id: bar
+                screen: screenScope.modelData
 
-            Item {
-                anchors.fill: parent
+                property var centers: centerInstantiator
+                property int screenIndex: index
 
-                // ---- LEFT ----
-                Rectangle {
-                    id: leftBg
-                    color: Theme.crust
-                    radius: Theme.moduleRadius
-                    anchors.left: parent.left
-                    anchors.leftMargin: 10
-                    anchors.top: parent.top
-                    anchors.topMargin: 5
-                    anchors.bottom: parent.bottom
-                    
-                    implicitWidth: leftRow.implicitWidth + 32
-                    
-                    RowLayout {
-                        id: leftRow
-                        anchors.centerIn: parent
-                        spacing: 16
+                WlrLayershell.namespace: "quickshell:bar"
+
+                anchors.top: true
+                anchors.left: true
+                anchors.right: true
+                implicitHeight: Theme.barHeight
+                color: "transparent"
+
+                Item {
+                    anchors.fill: parent
+
+                    // ---- LEFT ----
+                    BarGroup {
+                        anchors {
+                            left: parent.left;
+                            leftMargin: 10;
+                            top: parent.top;
+                            topMargin: 5;
+                            bottom: parent.bottom
+                        }
 
                         LauncherButton {}
                         Workspaces {}
                         MprisWidget {}
                     }
-                }
 
-                // ---- CENTER ----
-                Rectangle {
-                    id: centerBg
-                    color: Theme.crust
-                    radius: Theme.moduleRadius
-                    
-                    anchors.centerIn: parent
-                    
-                    implicitWidth: centerRow.implicitWidth + 32 
-                    implicitHeight: parent.height - 10
-                    
-                    RowLayout {
-                        id: centerRow
-                        anchors.centerIn: parent
+                    // ---- CENTER ----
+                    BarGroup {
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            top: parent.top
+                            topMargin: 5
+                            bottom: parent.bottom
+                        }
+
                         ClockCenter {}
                     }
-                }
 
-                // ---- RIGHT ----
-                Rectangle {
-                    id: rightBg
-                    color: Theme.crust
-                    radius: Theme.moduleRadius
-                    anchors.right: parent.right
-                    anchors.rightMargin: 10
-                    anchors.top: parent.top
-                    anchors.topMargin: 5
-                    anchors.bottom: parent.bottom
-                    
-                    implicitWidth: rightRow.implicitWidth + 32 
-                    
-                    RowLayout {
-                        id: rightRow
-                        anchors.centerIn: parent
-                        spacing: 16
+                    // ---- RIGHT ----
+                    BarGroup {
+                        anchors {
+                            right: parent.right;
+                            rightMargin: 10;
+                            top: parent.top;
+                            topMargin: 5;
+                            bottom: parent.bottom
+                        }
 
                         TrayWidget {
                             parentWindow: bar
@@ -137,7 +111,7 @@ Scope {
                         CalendarWidget {}
                         NotificationWidget {
                             server: notifServer
-                            parentWindow: bar
+                            center: notifCenter
                         }
                         PowerButton {}
                     }

@@ -25,12 +25,6 @@ Singleton {
         Pipewire.preferredDefaultAudioSink = node;
     }
 
-    function changeVolume(deltaPercent) {
-        if (!ready) return;
-        let v = sink.audio.volume + deltaPercent / 100;
-        sink.audio.volume = Math.max(0, Math.min(1, v));
-    }
-
     PwObjectTracker {
         objects: [root.sink]
     }

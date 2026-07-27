@@ -7,7 +7,7 @@ Rectangle {
     property real glowWidthFactor: 0.6
 
     color: Qt.rgba(15 / 255, 15 / 255, 25 / 255, 0.4)
-    border.color: hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.05)
+    border.color: hoverHandler.hovered ? Qt.rgba(1, 1, 1, 0.15) : Qt.rgba(1, 1, 1, 0.05)
     border.width: 1
 
     Behavior on border.color { ColorAnimation { duration: 200; easing.type: Easing.OutQuart } }

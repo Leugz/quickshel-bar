@@ -95,7 +95,7 @@ PanelWindow {
                     height: 26
                     radius: 6
                     color: clearMouse.containsMouse ? Qt.alpha(Theme.indigo, 0.15) : Qt.rgba(127/255, 127/255, 127/255, 0.08)
-                    border.color: clearMouse.containsMouse ? Qt.alpha(Theme.indigo, 0.4) : Qt.rgba(255/255, 255/255, 255/255, 0.12)
+                    border.color: clearMouse.containsMouse ? Qt.alpha(Theme.indigo, 0.4) : Qt.rgba(1, 1, 1, 0.12)
                     border.width: 1
 
                     Behavior on color { ColorAnimation { duration: 150 } }
