@@ -69,7 +69,7 @@ GlassPanel {
             Text {
                 Layout.fillWidth: true
                 text: root.notification ? (root.notification.body || "") : ""
-                color: Qt.rgba(255, 255, 255, 0.7)
+                color: Qt.rgba(1, 1, 1, 0.7)
                 font.family: Theme.fontFamily
                 font.pixelSize: 13
                 lineHeight: 1.2

@@ -52,8 +52,8 @@ PopupWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 8
                 clip: true
-                color: Qt.rgba(255, 255, 255, 0.05)
-                border.color: Qt.rgba(255, 255, 255, 0.1)
+                color: Qt.rgba(1, 1, 1, 0.05)
+                border.color: Qt.rgba(1, 1, 1, 0.1)
                 border.width: 1
                 
                 Text {
@@ -61,7 +61,7 @@ PopupWindow {
                     text: ""
                     font.family: Theme.fontFamilyAlt
                     font.pixelSize: 32
-                    color: Qt.rgba(255, 255, 255, 0.2)
+                    color: Qt.rgba(1, 1, 1, 0.2)
                     visible: coverArtImg.status !== Image.Ready
                 }
                 
@@ -182,7 +182,7 @@ PopupWindow {
                                 if (match) return match[1];
                                 return "Unknown source";
                             }
-                            color: focusMouse.containsMouse ? Theme.cyan : Qt.rgba(255, 255, 255, 0.5) 
+                            color: focusMouse.containsMouse ? Theme.cyan : Qt.rgba(1, 1, 1, 0.5) 
                             font.family: Theme.fontFamily
                             font.pixelSize: 11
                             font.bold: true
@@ -245,7 +245,7 @@ PopupWindow {
                     Text {
                         width: parent.width
                         text: root.activePlayer ? (root.activePlayer.trackArtist || "") : ""
-                        color: Qt.rgba(255, 255, 255, 0.7) 
+                        color: Qt.rgba(1, 1, 1, 0.7) 
                         font.family: Theme.fontFamily
                         font.pixelSize: 13
                         horizontalAlignment: Text.AlignHCenter
@@ -279,8 +279,8 @@ PopupWindow {
                             width: 36
                             height: 36
                             radius: 18
-                            color: playMouse.containsMouse ? Qt.rgba(Theme.indigo.r, Theme.indigo.g, Theme.indigo.b, 0.4) : Qt.rgba(255, 255, 255, 0.1)
-                            border.color: playMouse.containsMouse ? Theme.indigo : Qt.rgba(255, 255, 255, 0.2)
+                            color: playMouse.containsMouse ? Qt.rgba(Theme.indigo.r, Theme.indigo.g, Theme.indigo.b, 0.4) : Qt.rgba(1, 1, 1, 0.1)
+                            border.color: playMouse.containsMouse ? Theme.indigo : Qt.rgba(1, 1, 1, 0.2)
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 150 } }
                             Behavior on border.color { ColorAnimation { duration: 150 } }
